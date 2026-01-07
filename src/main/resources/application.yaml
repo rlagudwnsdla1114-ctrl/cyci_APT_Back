@@ -9,6 +9,6 @@ spring:
     password: 1234
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
-  type-aliases-package: kr.soft.shopping.dto    # DTO 위치
+  type-aliases-package: kr.soft.apt.dto    # DTO 위치
   configuration:
     map-underscore-to-camel-case: true      # user_id -> userId 자동 매핑
