@@ -3,9 +3,15 @@
         PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.soft.apt.mapper.CoverMapper">
+    
+    <insert id="writeCover" parameterType="CoverWriteDTO">
+        INSERT INTO cover_posts
+        (HOPE_JOB, HOPE_REGION, EDUCATION, MILITARY_STATUS, CAREER, CERTIFICATION, LANGUAGE_SKILL, APPLY_MOTIVE, GROWTH_PROCESS, PERSONALITY, JOB_EXPERIENCE, IMAGE_URL, JOBSEEKER_IDX)
+        VALUES
+        (#{hopeJob}, #{hopeRegion}, #{education}, #{militaryStatus}, #{career}, #{certification}, #{languageSkill}, #{applyMotive}, #{growthProcess}, #{personality}, #{jobExperience}, #{imageUrl}, #{jobseekerIdx})
+    </insert>
 
-
-    <select id="userInfo" resultType="CoverInfoDTO" parameterType="int">
+    <select id="userInfo" resultType="CoverInfoDTO" parameterType="long">
         select
             c.JOBSEEKER_NAME,
             c.JOBSEEKER_BIRTH,

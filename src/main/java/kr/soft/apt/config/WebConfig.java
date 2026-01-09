@@ -1,5 +1,6 @@
 package kr.soft.apt.config;
 
+import kr.soft.apt.config.interceptor.AuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -10,8 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {  // 클래스 이름 첫 글자 대문자 주의
 
 
-//    @Autowired
-//    private AuthInterceptor authInterceptor;
+    @Autowired
+    private AuthInterceptor authInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -24,13 +25,15 @@ public class WebConfig implements WebMvcConfigurer {  // 클래스 이름 첫 �
     }
 
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(authInterceptor)
-//                .addPathPatterns("/api/**")
-//                .excludePathPatterns(
-//                        "/api/member/**",
-//                        "/api/board/**"
-//                );
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns("/api/**")
+                .excludePathPatterns(
+                        "/api/auth/**",
+                        "/api/member/login",
+                        "/api/member/register",
+                        "/api/auth/refresh"
+                );
+    }
 }
