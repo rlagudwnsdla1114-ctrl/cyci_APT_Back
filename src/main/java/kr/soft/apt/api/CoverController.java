@@ -20,15 +20,18 @@ public class CoverController {
     @GetMapping("/userinfo")
     public CoverInfoDTO userInfo(HttpServletRequest request) {
 
-        long jobseekerIdx = (long)request.getAttribute("jobseekerIdx");
-
+//        long jobseekerIdx = (long)request.getAttribute("jobseekerIdx");
+        long jobseekerIdx = 1;
         return coverService.userInfo(jobseekerIdx);
     }
 
     @PostMapping("resume")
     public ResponseEntity<?> resume(@RequestBody CoverWriteDTO coverWriteDTO, HttpServletRequest request) {
 
-        long jobseekerIdx = (long)request.getAttribute("jobseekerIdx");
+//        long jobseekerIdx = (long)request.getAttribute("jobseekerIdx");
+
+        long jobseekerIdx = 1;
+
         coverWriteDTO.setJobseekerIdx(jobseekerIdx);
 
         coverService.writeCover(coverWriteDTO);
