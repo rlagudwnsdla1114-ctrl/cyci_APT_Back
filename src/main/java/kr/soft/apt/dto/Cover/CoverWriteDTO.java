@@ -9,6 +9,7 @@ public class CoverWriteDTO {
     private String education;
     private String militaryStatus;
     private String career;
+    private String keySkill;
     private String certification;
     private String languageSkill;
     private String applyMotive;

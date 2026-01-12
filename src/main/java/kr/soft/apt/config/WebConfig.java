@@ -25,15 +25,15 @@ public class WebConfig implements WebMvcConfigurer {  // 클래스 이름 첫 �
     }
 
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/api/**")
-                .excludePathPatterns(
-                        "/api/auth/**",
-                        "/api/member/login",
-                        "/api/member/register",
-                        "/api/auth/refresh"
-                );
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(authInterceptor)
+//                .addPathPatterns("/api/**")
+//                .excludePathPatterns(
+//                        "/api/auth/**",
+//                        "/api/member/login",
+//                        "/api/member/register",
+//                        "/api/auth/refresh"
+//                );
+//    }
 }
