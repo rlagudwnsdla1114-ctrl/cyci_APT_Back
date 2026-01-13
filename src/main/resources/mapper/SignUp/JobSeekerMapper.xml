@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.soft.apt.mapper.SignUp.JobSeekerUserMapper">
+
+   <select id="jblogin" parameterType="String" resultType="MemberLoginDTO">
+       select
+       JOBSEEKER_EMAIL,JOBSEEKER_PASSWORD
+       from
+       jobseeker_users
+       where
+       JOBSEEKER_IDX=#{parm}
+   </select>
+
+    <insert id="jbsignup" parameterType="JobSeekerUserDTO">
+        INSERT INTO JOBSEEKER_USERS (
+        JOBSEEKER_EMAIL,
+        JOBSEEKER_PASSWORD,
+        JOBSEEKER_NAME,
+        region,
+        CREATE_AT,
+        JOBSEEKER_PHONE,
+        JOBSEEKER_BIRTH
+
+        )
+        VALUES (
+        #{email},
+        #{password},
+        #{name},
+        #{region},
+        sysdate(),
+        #{phone},
+        #{birthDate}
+
+        )
+    </insert>
+
+
+</mapper>

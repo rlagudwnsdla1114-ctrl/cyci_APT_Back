@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.soft.apt.mapper.SignUp.CompanyUserMapper">
+
+
+    <select id="login" parameterType="String" resultType="MemberLoginDTO">
+        select
+        COMPANY_EMAIL,COMPANY_PASSWORD
+        from
+        company_users
+        where
+        COMPANY_IDX=#{parm}
+    </select>
+
+
+
+    <insert id="signup" parameterType="CompanyUserDTO">
+        INSERT INTO COMPANY_USERS (
+        COMPANY_EMAIL,
+        COMPANY_PASSWORD,
+        CREATE_AT,
+        COMPANY_REGION,
+        COMPANY_NAME,
+        COMPANY_REGISTRATION,
+        COMPANY_SIZE,
+        COMPANY_PHONE
+
+        )
+        VALUES (
+        #{email},
+        #{password},
+        sysdate(),
+        #{region},
+        #{companyName},
+        #{bizNumber},
+        #{bizPhone},
+        #{companySize}
+
+        )
+    </insert>
+</mapper>
