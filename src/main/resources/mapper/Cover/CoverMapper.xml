@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.soft.apt.mapper.CoverMapper">
     
@@ -13,13 +13,56 @@
 
     <select id="userInfo" resultType="CoverInfoDTO" parameterType="long">
         select
-            c.JOBSEEKER_NAME,
-            c.JOBSEEKER_BIRTH,
-            c.JOBSEEKER_EMAIL,
-            c.JOBSEEKER_PHONE
+            JOBSEEKER_NAME,
+            JOBSEEKER_BIRTH,
+            JOBSEEKER_EMAIL,
+            JOBSEEKER_PHONE
         from
-            jobseeker_users c
+            jobseeker_users
         where
-            c.JOBSEEKER_IDX = #{userIdx}
+            JOBSEEKER_IDX = #{value}
+    </select>
+
+    <update id="updateCover" parameterType="CoverUpdateDTO">
+        UPDATE
+            cover_posts
+        SET
+            HOPE_JOB = #{hopeJob},
+            HOPE_REGION = #{hopeRegion},
+            EDUCATION = #{education},
+            MILITARY_STATUS = #{militaryStatus},
+            CAREER = #{career},
+            KEYSKILL = #{keySkill},
+            CERTIFICATION = #{certification},
+            LANGUAGE_SKILL = #{languageSkill},
+            APPLY_MOTIVE = #{applyMotive},
+            GROWTH_PROCESS = #{growthProcess},
+            PERSONALITY = #{personality},
+            JOB_EXPERIENCE = #{jobExperience},
+            IMAGE_URL = #{imageUrl}
+        WHERE
+            JOBSEEKER_IDX = #{jobseekerIdx}
+    </update>
+    
+    <select id="readCover" parameterType="long" resultType="CoverReadDTO">
+        select
+            HOPE_JOB,
+            HOPE_REGION,
+            EDUCATION,
+            MILITARY_STATUS,
+            CAREER,
+            KEYSKILL,
+            CERTIFICATION,
+            LANGUAGE_SKILL,
+            APPLY_MOTIVE,
+            GROWTH_PROCESS,
+            PERSONALITY,
+            JOB_EXPERIENCE,
+            IMAGE_URL
+        from
+            cover_posts
+        where
+            JOBSEEKER_IDX = #{value}
+        limit 1
     </select>
 </mapper>

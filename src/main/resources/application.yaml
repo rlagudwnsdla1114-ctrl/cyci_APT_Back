@@ -7,6 +7,7 @@ spring:
     url: jdbc:mysql://localhost:3306/cyci?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: 1234
+
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   type-aliases-package: kr.soft.apt.dto    # DTO 위치
@@ -23,3 +24,5 @@ server:
 
 jwt:
   secret: my-super-secret-key-12345678901234567890
+
+

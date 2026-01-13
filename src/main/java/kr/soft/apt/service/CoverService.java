@@ -2,6 +2,8 @@ package kr.soft.apt.service;
 
 
 import kr.soft.apt.dto.Cover.CoverInfoDTO;
+import kr.soft.apt.dto.Cover.CoverReadDTO;
+import kr.soft.apt.dto.Cover.CoverUpdateDTO;
 import kr.soft.apt.dto.Cover.CoverWriteDTO;
 import kr.soft.apt.mapper.CoverMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,4 +22,8 @@ public class CoverService {
     public CoverInfoDTO userInfo(long userIdx) {
         return coverMapper.userInfo(userIdx);
     }
+
+    public CoverReadDTO readCover(long userIdx) { return coverMapper.readCover(userIdx); }
+
+    public int updateCover(CoverUpdateDTO dto) { return coverMapper.updateCover(dto); }
 }
