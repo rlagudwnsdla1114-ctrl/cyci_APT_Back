@@ -6,11 +6,11 @@
 
    <select id="jblogin" parameterType="String" resultType="MemberLoginDTO">
        select
-       JOBSEEKER_EMAIL,JOBSEEKER_PASSWORD
+       JOBSEEKER_EMAIL as email ,JOBSEEKER_PASSWORD as password
        from
        jobseeker_users
        where
-       JOBSEEKER_IDX=#{parm}
+       JOBSEEKER_EMAIL = #{parm}
    </select>
 
     <insert id="jbsignup" parameterType="JobSeekerUserDTO">
@@ -18,7 +18,7 @@
         JOBSEEKER_EMAIL,
         JOBSEEKER_PASSWORD,
         JOBSEEKER_NAME,
-        region,
+
         CREATE_AT,
         JOBSEEKER_PHONE,
         JOBSEEKER_BIRTH
@@ -28,7 +28,7 @@
         #{email},
         #{password},
         #{name},
-        #{region},
+
         sysdate(),
         #{phone},
         #{birthDate}
