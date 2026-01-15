@@ -37,10 +37,15 @@ public class RedisTokenService {
         return false;
     }
 
-    /*
+
     // ✅ Refresh Token 조회
     public String getRefreshToken(String userId) {
         return redisTemplate.opsForValue().get("refresh:" + userId);
+    }
+
+    // ✅ Access Token 삭제 (로그아웃/강제무효화)
+    public void deleteAccessToken(String redisKey) {
+        redisTemplate.delete(redisKey);
     }
 
     // ✅ Refresh Token 삭제 (로그아웃 시)
@@ -63,6 +68,6 @@ public class RedisTokenService {
         return redisTemplate.hasKey("blacklist:" + accessToken);
     }
 
-     */
+
 
 }
