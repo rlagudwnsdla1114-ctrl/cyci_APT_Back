@@ -8,14 +8,14 @@ public class CompanyUserDTO {
 
 
 
-    private String email;
-    private String password;
-    private String region;
+    private String companyEmail;
+    private String companyPassword;
+    private String companyRegion;
 
 
     private String companyName;
-    private String bizNumber;
-    private String bizPhone;
+    private String companyNumber;
+    private String companyPhone;
     private String companySize;
 
 }

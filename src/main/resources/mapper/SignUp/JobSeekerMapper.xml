@@ -4,34 +4,33 @@
 
 <mapper namespace="kr.soft.apt.mapper.SignUp.JobSeekerUserMapper">
 
-   <select id="jblogin" parameterType="String" resultType="MemberLoginDTO">
+   <select id="login" parameterType="String" resultType="JobseekerLoginDTO">
        select
-       JOBSEEKER_EMAIL,JOBSEEKER_PASSWORD
+           JOBSEEKER_IDX, JOBSEEKER_EMAIL,JOBSEEKER_PASSWORD
        from
-       jobseeker_users
+            jobseeker_users
        where
-       JOBSEEKER_IDX=#{parm}
+           JOBSEEKER_EMAIL=#{value}
+        LIMIT 1
    </select>
 
-    <insert id="jbsignup" parameterType="JobSeekerUserDTO">
+    <insert id="signup" parameterType="JobSeekerUserDTO">
         INSERT INTO JOBSEEKER_USERS (
         JOBSEEKER_EMAIL,
         JOBSEEKER_PASSWORD,
         JOBSEEKER_NAME,
-        region,
         CREATE_AT,
         JOBSEEKER_PHONE,
         JOBSEEKER_BIRTH
 
         )
         VALUES (
-        #{email},
-        #{password},
-        #{name},
-        #{region},
+        #{jobSeekerEmail},
+        #{jobSeekerPassword},
+        #{jobSeekerName},
         sysdate(),
-        #{phone},
-        #{birthDate}
+        #{jobSeekerPhone},
+        #{jobSeekerBirthDate}
 
         )
     </insert>

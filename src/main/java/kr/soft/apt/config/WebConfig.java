@@ -32,16 +32,25 @@ public class WebConfig implements WebMvcConfigurer {  // 클래스 이름 첫 �
     }
 
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns("/api/**")   // ✅ API는 기본적으로 인증 필요
+                .excludePathPatterns(
+                        // ✅ 로그인/회원가입 (토큰 없을 때 접근해야 함)
+                        "/api/jobseeker/login",
+                        "/api/jobseeker/signup",
+                        "/api/company/login",
+                        "/api/company/signup",
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(authInterceptor)
-//                .addPathPatterns("/api/**")
-//                .excludePathPatterns(
-//                        "/api/auth/**",
-//                        "/api/member/login",
-//                        "/api/member/register",
-//                        "/api/auth/refresh"
-//                );
-//    }
+                        // ✅ 토큰 재발급/로그아웃 같은 인증 예외가 필요하면 추가
+                        "/api/auth/refresh",
+
+                        // ✅ 정적 리소스는 애초에 /api가 아니지만 혹시 몰라 예외로 둬도 됨
+                        "/uploads/**",
+
+                        // ✅ CORS preflight(가끔 필요)
+                        "/error"
+                );
+    }
 }

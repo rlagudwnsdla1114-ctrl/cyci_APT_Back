@@ -41,10 +41,12 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        String userId = jwtTokenProvider.getUserId(token);
+        long idx = jwtTokenProvider.getUserIdx(token);
+        String prefix = request.getRequestURI().startsWith("/api/company") ? "company:" : "jobseeker:";
+        String redisKey = prefix + idx;
 
         // ✅ 3. Redis에 등록된 토큰인지 확인
-        if (!redisTokenService.existsAccessToken(userId, token)) {
+        if (!redisTokenService.existsAccessToken(redisKey, token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("⚠️ Redis에 등록되지 않은 토큰입니다.");
             return false;
@@ -52,12 +54,10 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         log.info("test");
 
-        long useridx = jwtTokenProvider.getUserIdx(token);
-
-        request.setAttribute("jobseekerIdx", useridx);
+        request.setAttribute("userIdx", idx);
 
         // ✅ 4. TTL 갱신 (30분)
-        redisTokenService.refreshAccessTokenTTL(userId);
+        redisTokenService.refreshAccessTokenTTL(redisKey);
 
         return true;
     }
