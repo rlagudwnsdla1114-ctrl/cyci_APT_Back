@@ -5,7 +5,7 @@
 <mapper namespace="kr.soft.apt.mapper.SignUp.CompanyUserMapper">
 
 
-    <select id="login" parameterType="String" resultType="MemberLoginDTO">
+    <select id="login" parameterType="String" resultType="CompanyLoginDTO">
         select
         COMPANY_EMAIL as email,COMPANY_PASSWORD as password
         from

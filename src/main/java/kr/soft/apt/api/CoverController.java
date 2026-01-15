@@ -29,7 +29,7 @@ public class CoverController {
 
     @GetMapping("/userinfo")
     public CoverInfoDTO userInfo(HttpServletRequest request) {
-        long jobseekerIdx = 1; // TODO 인증 붙이면 request에서 꺼내기
+        long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
         return coverService.userInfo(jobseekerIdx);
     }
 
@@ -63,7 +63,7 @@ public class CoverController {
     @GetMapping("/resume/my")
     public ResponseEntity<?> getMyResume(HttpServletRequest request) {
 
-        long jobseekerIdx  = 1; // TODO: 로그인에서 가져오기 (세션/JWT)
+        long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
 
         CoverReadDTO dto = coverService.readCover(jobseekerIdx);
         if (dto == null) return ResponseEntity.noContent().build(); // 204
@@ -74,7 +74,7 @@ public class CoverController {
     @PutMapping("/resume/my")
     public ResponseEntity<?> putMyResume(@RequestBody CoverWriteDTO body, HttpServletRequest request) {
 
-        long jobseekerIdx  = 1; // TODO: 로그인에서 가져오기 (세션/JWT)
+        long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
 
         // 1) 기존 데이터 있는지 확인
         CoverReadDTO existing = coverService.readCover(jobseekerIdx);
