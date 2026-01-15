@@ -28,7 +28,7 @@ public class JobSeekerUserService {
 
     public String jblogin(MemberLoginDTO dto){
         MemberLoginDTO resultDTO=jobSeekerUserMapper.jblogin(dto.getEmail());
-        if(resultDTO==null || !resultDTO.getPassword().equals(dto.getEmail())){
+        if(resultDTO==null || !resultDTO.getPassword().equals(dto.getPassword())){
             return  null;
         }
         String text="apple_"+dto.getEmail();

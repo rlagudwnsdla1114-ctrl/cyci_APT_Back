@@ -31,8 +31,8 @@ public class JobSeekerUserController {
     }
 
     @PostMapping("/jblogin")
-    public ResponseEntity jblogin(@RequestBody MemberLoginDTO memberLoginDTO){
-        log.info("/api/member/login");
+    public ResponseEntity<?> jblogin(@RequestBody MemberLoginDTO memberLoginDTO){
+        log.info("/api/member/jblogin");
         log.info("data {}", memberLoginDTO.toString());
 
         String check=jobSeekerUserService.jblogin(memberLoginDTO);

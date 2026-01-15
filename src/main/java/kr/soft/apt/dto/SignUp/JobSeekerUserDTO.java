@@ -9,7 +9,7 @@ public class JobSeekerUserDTO {
 
     private String email;
     private String password;
-    private String region;
+
 
     private String name;
     private String birthDate;
