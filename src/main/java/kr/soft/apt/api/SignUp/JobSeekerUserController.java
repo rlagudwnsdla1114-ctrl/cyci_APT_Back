@@ -31,6 +31,7 @@ public class JobSeekerUserController {
         return ResponseEntity.ok("ok");
     }
 
+
     @PostMapping("/login")
     public  ResponseEntity<ApiResponse<String>> login(@RequestBody JobseekerLoginDTO jobseekerLoginDTO){
 

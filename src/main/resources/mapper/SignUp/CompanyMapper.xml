@@ -7,11 +7,11 @@
 
     <select id="login" parameterType="String" resultType="CompanyLoginDTO">
         select
-        COMPANY_EMAIL,COMPANY_PASSWORD
+        COMPANY_EMAIL as email,COMPANY_PASSWORD as password
         from
         company_users
         where
-        COMPANY_IDX=#{parm}
+        COMPANY_EMAIL = #{parm}
     </select>
 
 
@@ -35,8 +35,9 @@
         #{region},
         #{companyName},
         #{bizNumber},
-        #{bizPhone},
-        #{companySize}
+        #{companySize},
+        #{bizPhone}
+
 
         )
     </insert>
