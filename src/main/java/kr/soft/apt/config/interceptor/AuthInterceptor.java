@@ -41,6 +41,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        String userId = jwtTokenProvider.getUserId(token);
         long idx = jwtTokenProvider.getUserIdx(token);
         String prefix = request.getRequestURI().startsWith("/api/company") ? "company:" : "jobseeker:";
         String redisKey = prefix + idx;
@@ -54,7 +55,9 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         log.info("test");
 
+        request.setAttribute("userId", userId);
         request.setAttribute("userIdx", idx);
+        request.setAttribute("redisKey", redisKey);
 
         // ✅ 4. TTL 갱신 (30분)
         redisTokenService.refreshAccessTokenTTL(redisKey);

@@ -7,7 +7,7 @@
 
     <select id="login" parameterType="String" resultType="CompanyLoginDTO">
         select
-        COMPANY_EMAIL as email,COMPANY_PASSWORD as password
+        COMPANY_EMAIL, COMPANY_PASSWORD
         from
         company_users
         where

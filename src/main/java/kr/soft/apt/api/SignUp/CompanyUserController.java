@@ -1,8 +1,10 @@
 package kr.soft.apt.api.SignUp;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kr.soft.apt.dto.SignUp.CompanyLoginDTO;
 import kr.soft.apt.dto.SignUp.CompanyUserDTO;
 import kr.soft.apt.dto.SignUp.JobseekerLoginDTO;
+import kr.soft.apt.service.RedisTokenService;
 import kr.soft.apt.service.SignUp.CompanyUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,10 @@ public class CompanyUserController {
     @Autowired
     private CompanyUserService companyUserService;
 
+    @Autowired
+    private RedisTokenService redisTokenService;
+
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody CompanyUserDTO companyUserDTO){
         log.info("/api/member/companyusersignup/");
@@ -38,6 +44,18 @@ public class CompanyUserController {
 
         String check=companyUserService.login(companyLoginDTO);
         return ResponseEntity.ok(check);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+
+        String redisKey = (String) request.getAttribute("redisKey"); // company:idx
+        String userId = (String) request.getAttribute("userId");
+
+        if (redisKey != null) redisTokenService.deleteAccessToken(redisKey);
+        if (userId != null) redisTokenService.deleteRefreshToken(userId);
+
+        return ResponseEntity.ok("company-logout-ok");
     }
 
 }
