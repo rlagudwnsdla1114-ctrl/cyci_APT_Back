@@ -94,5 +94,11 @@
         ORDER BY jp.JOB_POSTS_IDX DESC
     </select>
 
+    <delete id="deleteMyJobPost" parameterType="map">
+        DELETE FROM job_posts
+        WHERE JOB_POSTS_IDX = #{jobPostsIdx}
+        AND COMPANY_IDX = #{companyIdx}
+    </delete>
+
 
 </mapper>

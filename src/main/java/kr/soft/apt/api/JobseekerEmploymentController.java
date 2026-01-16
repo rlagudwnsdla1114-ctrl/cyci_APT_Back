@@ -16,26 +16,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/company/employment")
-public class EmploymentController {
-
+@RequestMapping("/api/jobseeker/employment")
+public class JobseekerEmploymentController {
     @Autowired
     private EmploymentService employmentService;
 
-    // ✅ 공고 등록: 내 회사 idx는 인터셉터에서 꺼내서 세팅
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<String>> writeEmployment(
-            @RequestBody EmploymentWriteDTO dto,
-            HttpServletRequest request
-    ) {
-        Long companyIdx = (Long) request.getAttribute("userIdx"); // 인터셉터에서 넣어준 값
-        dto.setCompanyIdx(companyIdx);
-
-        log.info("공고 등록 요청 companyIdx={}, dto={}", companyIdx, dto);
-        employmentService.writeEmployment(dto);
-
-        return ApiResponse.success("ok");
-    }
 
     // ✅ 공고 상세: 내 회사 글만 조회(권한 체크)
     @GetMapping("/{jobPostsIdx}")
@@ -54,15 +39,4 @@ public class EmploymentController {
         return ApiResponse.success(employmentService.listMyJobPosts(companyIdx));
     }
 
-    // ✅ 공고 수정: 내 회사 글 + 해당 글만 수정
-    @PutMapping("/{jobPostsIdx}")
-    public ResponseEntity<ApiResponse<String>> updateMy(
-            @PathVariable Long jobPostsIdx,
-            @RequestBody EmploymentUpdateDTO dto,
-            HttpServletRequest request
-    ) {
-        Long companyIdx = (Long) request.getAttribute("userIdx");
-        employmentService.updateMyJobPost(jobPostsIdx, companyIdx, dto);
-        return ApiResponse.success("ok");
-    }
 }
