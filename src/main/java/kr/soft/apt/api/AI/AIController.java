@@ -23,7 +23,9 @@ public class AIController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/AIRecommendedCompany")
-    public Map<String, Object> aiRecommendedCompany(@RequestBody(required = false) JobRecommendReqDTO req) {
+    public Map<String, Object> aiRecommendedCompany(
+            @RequestBody(required = false) JobRecommendReqDTO req,
+            @RequestHeader(value = "Authorization", required = false) String authorization) {
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             return Map.of("lists", List.of(), "error", "Authorization header missing");
         }
@@ -33,6 +35,7 @@ public class AIController {
         if (!jwtTokenProvider.validateToken(token)) {
             return Map.of("lists", List.of(), "error", "Invalid token");
         }
+
         long jobIdx = jwtTokenProvider.getUserIdx(token);
         int topN = (req == null || req.getTopN() <= 0) ? 20 : Math.min(req.getTopN(),20);
         List<AIRecommendedCompanyDTO> lists =aiService.aiSearch(jobIdx, topN);
