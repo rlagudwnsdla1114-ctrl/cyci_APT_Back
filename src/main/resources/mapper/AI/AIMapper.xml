@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.soft.apt.mapper.AI.AIMapper">
+
+    <select id="coverposts" resultType="CoverPosts">
+        select
+            COVER_POSTS_IDX,
+            HOPE_JOB,
+            HOPE_REGION,
+            EDUCATION,
+            MILITARY_STATUS,
+            CAREER,
+            KEYSKILL,
+            CERTIFICATION,
+            LANGUAGE_SKILL,
+            PERSONALITY,
+            JOB_EXPERIENCE,
+            JOBSEEKER_IDX
+        from
+            COVER_POSTS
+        where
+            JOBSEEKER_IDX = #{jobseekerIdx};
+    </select>
+
+    <select id="jobposts" resultType="JobPosts">
+        select
+            JOB_POSTS_IDX,
+            VIEW_COUNT,
+            ATTACH_FILE,
+            TITLE,
+            EMPLOYMENT_TYPE,
+            SALARY,
+            WORK_TIME,
+            CAREER,
+            EDUCATION,
+            TECH_STACK,
+            APPLICATION_PERIOD,
+            COMPANY_IDX
+        from
+            JOB_POSTS;
+    </select>
+
+
+    <delete id="jobmatchdelete">
+        delete
+        from
+            JOBSEEKER_MATCHING
+        where
+            JOBSEEKER_IDX = #{jobseekerIdx}
+    </delete>
+
+
+    <insert id="jobmatchinsert" parameterType="JobseekerMatchingInsertDTO">
+        insert into JOBSEEKER_MATCHING (
+            JOB_MATCH_SCORE,
+            JOB_AI_REASON,
+            MATCHING_CREATEAT,
+            JOBSEEKER_IDX,
+            COMPANY_IDX,
+            JOB_POSTS_IDX,
+            COVER_POSTS_IDX
+        )
+        values (
+            #{score},
+            #{reason},
+            SYSDATE(),
+            #{jobseekerIdx},
+            #{companyIdx},
+            #{jobPostsIdx},
+            #{coverPostsIdx}
+        )
+    </insert>
+
+
+    <select id="jobmatchselect" resultType="AIRecommendedCompanyDTO">
+        select
+            jm.JOB_MATCH_SCORE as score,
+            cu.COMPANY_NAME as company,
+            jp.TITLE as title,
+            jp.SALARY as salary,
+            cu.COMPANY_REGION as loc,
+            jm.JOB_AI_REASON as reason
+        from
+            JOBSEEKER_MATCHING jm
+        inner join COMPANY_USERS cu
+        on jm.COMPANY_IDX = cu.COMPANY_IDX
+        inner join JOB_POSTS jp
+        on jm.JOB_POSTS_IDX = jp.JOB_POSTS_IDX
+        where
+            JOBSEEKER_IDX = #{jobseekerIdx}
+        order by jm.JOB_MATCH_SCORE desc
+            limit #{topN}
+    </select>
+
+    <select id="selectLatestCoverPostsIdx" resultType="long">
+        SELECT COVER_POSTS_IDX
+        FROM COVER_POSTS
+        WHERE JOBSEEKER_IDX = #{jobseekerIdx}
+        ORDER BY COVER_POSTS_IDX DESC
+        LIMIT 1
+    </select>
+
+</mapper>
