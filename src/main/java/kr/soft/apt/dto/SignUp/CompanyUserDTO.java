@@ -14,7 +14,7 @@ public class CompanyUserDTO {
 
 
     private String companyName;
-    private String companyNumber;
+    private String companyRegistration;
     private String companyPhone;
     private String companySize;
 

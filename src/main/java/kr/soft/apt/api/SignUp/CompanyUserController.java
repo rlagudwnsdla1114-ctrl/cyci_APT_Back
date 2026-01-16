@@ -1,6 +1,7 @@
 package kr.soft.apt.api.SignUp;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.soft.apt.common.ApiResponse;
 import kr.soft.apt.dto.SignUp.CompanyLoginDTO;
 import kr.soft.apt.dto.SignUp.CompanyUserDTO;
 import kr.soft.apt.dto.SignUp.JobseekerLoginDTO;
@@ -29,7 +30,7 @@ public class CompanyUserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody CompanyUserDTO companyUserDTO){
-        log.info("/api/member/companyusersignup/");
+        log.info("/api/company/signup/");
         log.info("data {}", companyUserDTO.toString());
         companyUserService.signup(companyUserDTO);
 
@@ -38,12 +39,9 @@ public class CompanyUserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody CompanyLoginDTO companyLoginDTO){
-        log.info("/api/member/login");
-        log.info("data {}", companyLoginDTO.toString());
+    public  ResponseEntity<ApiResponse<String>> login(@RequestBody  CompanyLoginDTO companyLoginDTO){
 
-        String check=companyUserService.login(companyLoginDTO);
-        return ResponseEntity.ok(check);
+        return ApiResponse.success(companyUserService.login(companyLoginDTO));
     }
 
     @PostMapping("/logout")

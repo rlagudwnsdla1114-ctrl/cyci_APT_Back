@@ -4,41 +4,39 @@
 
 <mapper namespace="kr.soft.apt.mapper.SignUp.CompanyUserMapper">
 
-
+    <!-- ✅ 로그인: parameterType String이면 #{value} 로 받는게 제일 안전 -->
     <select id="login" parameterType="String" resultType="CompanyLoginDTO">
-        select
-        COMPANY_EMAIL, COMPANY_PASSWORD
-        from
-        company_users
-        where
-        COMPANY_EMAIL = #{parm}
+        SELECT
+            COMPANY_IDX,
+            COMPANY_EMAIL,
+            COMPANY_PASSWORD
+        FROM company_users
+        WHERE COMPANY_EMAIL = #{value}
+            LIMIT 1
     </select>
 
-
-
+    <!-- ✅ 회원가입: DTO 필드명에 맞춰서 바인딩 -->
     <insert id="signup" parameterType="CompanyUserDTO">
         INSERT INTO COMPANY_USERS (
-        COMPANY_EMAIL,
-        COMPANY_PASSWORD,
-        CREATE_AT,
-        COMPANY_REGION,
-        COMPANY_NAME,
-        COMPANY_REGISTRATION,
-        COMPANY_SIZE,
-        COMPANY_PHONE
-
+            COMPANY_EMAIL,
+            COMPANY_PASSWORD,
+            CREATE_AT,
+            COMPANY_REGION,
+            COMPANY_NAME,
+            COMPANY_REGISTRATION,
+            COMPANY_SIZE,
+            COMPANY_PHONE
         )
         VALUES (
-        #{email},
-        #{password},
-        sysdate(),
-        #{region},
-        #{companyName},
-        #{bizNumber},
-        #{companySize},
-        #{bizPhone}
-
-
-        )
+                   #{companyEmail},
+                   #{companyPassword},
+                   SYSDATE(),
+                   #{companyRegion},
+                   #{companyName},
+                   #{companyRegistration},
+                   #{companySize},
+                   #{companyPhone}
+               )
     </insert>
+
 </mapper>
