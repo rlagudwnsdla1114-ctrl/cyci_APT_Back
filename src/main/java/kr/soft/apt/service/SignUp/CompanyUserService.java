@@ -19,57 +19,45 @@ public class CompanyUserService {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
     @Autowired
     private RedisTokenService redisTokenService;
+
     @Autowired
     private BCryptPasswordEncoder encoder;
 
     public void signup(CompanyUserDTO dto){
 
+        // 1) 회사 규모 변환을 먼저
+        dto.setCompanySize(dto.getCompanySize());
+
+        // 2) 비밀번호 해시
+        String hashedPw = encoder.encode(dto.getCompanyPassword());
+        dto.setCompanyPassword(hashedPw);
+
+        // 3) DB 저장은 딱 1번만
         companyUserMapper.signup(dto);
-
-
-        String sizeStr = dto.getCompanySize();
-        String convertedSize = "0";
-
-        if (sizeStr != null) {
-            switch (sizeStr) {
-                case "1~10명":      convertedSize = "1"; break;
-                case "11~50명":     convertedSize = "2"; break;
-                case "51~200명":    convertedSize = "3"; break;
-                case "201~1000명":  convertedSize = "4"; break;
-                case "1000명 이상": convertedSize = "5"; break;
-            }
-        }
-
-        dto.setCompanySize(convertedSize);
-        companyUserMapper.signup(dto);
-
-
-
     }
 
-
     public String login(CompanyLoginDTO dto){
-        CompanyLoginDTO resultDTO=companyUserMapper.login(dto.getCompanyEmail());
+        CompanyLoginDTO resultDTO = companyUserMapper.login(dto.getCompanyEmail());
         if (resultDTO == null) return null;
 
+        // ✅ 암호 검증 (raw vs hashed)
         if (!encoder.matches(dto.getCompanyPassword(), resultDTO.getCompanyPassword())) {
             return null;
         }
+
         String id = resultDTO.getCompanyEmail();
         long idx = resultDTO.getCompanyIdx();
-        String key = "company:" + idx;
+        String redisKey = "company:" + idx;
 
-
-        //2. JWT 토큰 만들기
+        // JWT 생성
         String accessToken = jwtTokenProvider.createAccessToken(idx, id);
 
-        //3. Redis 등록 (access:userId 형태)
-        redisTokenService.saveAccessToken(key, accessToken);
+        // Redis 등록
+        redisTokenService.saveAccessToken(redisKey, accessToken);
 
         return accessToken;
     }
-
-
 }

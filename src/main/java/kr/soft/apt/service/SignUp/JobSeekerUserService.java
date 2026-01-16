@@ -26,7 +26,7 @@ public class JobSeekerUserService {
     private BCryptPasswordEncoder encoder;
 
 
-    public void jbSignup(JobSeekerUserDTO dto){
+    public void signup(JobSeekerUserDTO dto){
 
         String hashedPw = encoder.encode(dto.getJobSeekerPassword());
         dto.setJobSeekerPassword(hashedPw);
@@ -35,7 +35,7 @@ public class JobSeekerUserService {
 
     }
 
-    public String jbLogin(JobseekerLoginDTO dto){
+    public String login(JobseekerLoginDTO dto){
         JobseekerLoginDTO resultDTO = jobSeekerUserMapper.login(dto.getJobseekerEmail());
 
         if (resultDTO == null) return null;

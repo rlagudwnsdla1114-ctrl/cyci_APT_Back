@@ -40,55 +40,59 @@
 
     </insert>
 
-<!--    <select id="readMyJobPost" parameterType="map" resultType="JobPostReadDTO">-->
-<!--        SELECT-->
-<!--        JOB_POSTS_IDX,-->
-<!--        ATTACH_FILE,-->
-<!--        TITLE,-->
-<!--        RECRUIT_COUNT,-->
-<!--        EMPLOYMENT_TYPE,-->
-<!--        SALARY,-->
-<!--        WORK_TIME,-->
-<!--        CAREER,-->
-<!--        EDUCATION,-->
-<!--        TECH_STACK,-->
-<!--        APPLICATION_PERIOD,-->
-<!--        POSTS_CREATED_AT,-->
-<!--        COMPANY_IDX-->
-<!--        FROM job_posts-->
-<!--        WHERE JOB_POSTS_IDX = #{jobPostsIdx}-->
-<!--        AND COMPANY_IDX = #{companyIdx}-->
-<!--        LIMIT 1-->
-<!--    </select>-->
+    <select id="readMyJobPost" parameterType="map" resultType="EmploymentReadDTO">
+        SELECT
+        JOB_POSTS_IDX,
+        ATTACH_FILE,
+        TITLE,
+        RECRUIT_COUNT,
+        EMPLOYMENT_TYPE,
+        SALARY,
+        WORK_TIME,
+        CAREER,
+        EDUCATION,
+        TECH_STACK,
+        APPLICATION_PERIOD,
+        POSTS_CREATED_AT,
+        COMPANY_IDX
+        FROM job_posts
+        WHERE JOB_POSTS_IDX = #{jobPostsIdx}
+        AND COMPANY_IDX = #{companyIdx}
+        LIMIT 1
+    </select>
 
 
-<!--    <update id="updateMyJobPost" parameterType="JobPostUpdateDTO">-->
-<!--        UPDATE job_posts-->
-<!--        SET-->
-<!--        TITLE = #{title},-->
-<!--        ATTACH_FILE = #{attachFile},-->
-<!--        RECRUIT_COUNT = #{recruitCount},-->
-<!--        EMPLOYMENT_TYPE = #{employmentType},-->
-<!--        SALARY = #{salary},-->
-<!--        WORK_TIME = #{workTime},-->
-<!--        CAREER = #{career},-->
-<!--        EDUCATION = #{education},-->
-<!--        TECH_STACK = #{techStack},-->
-<!--        APPLICATION_PERIOD = #{applicationPeriod}-->
-<!--        WHERE JOB_POSTS_IDX = #{jobPostsIdx}-->
-<!--        AND COMPANY_IDX = #{companyIdx}-->
-<!--    </update>-->
+    <update id="updateMyJobPost" parameterType="EmploymentUpdateDTO">
+        UPDATE job_posts
+        SET
+        TITLE = #{title},
+        ATTACH_FILE = #{attachFile},
+        RECRUIT_COUNT = #{recruitCount},
+        EMPLOYMENT_TYPE = #{employmentType},
+        SALARY = #{salary},
+        WORK_TIME = #{workTime},
+        CAREER = #{career},
+        EDUCATION = #{education},
+        TECH_STACK = #{techStack},
+        APPLICATION_PERIOD = #{applicationPeriod}
+        WHERE JOB_POSTS_IDX = #{jobPostsIdx}
+        AND COMPANY_IDX = #{companyIdx}
+    </update>
 
-<!--    <select id="listMyJobPosts" parameterType="long" resultType="JobPostListDTO">-->
-<!--        SELECT-->
-<!--        JOB_POSTS_IDX,-->
-<!--        TITLE,-->
-<!--        POSTS_CREATED_AT,-->
-<!--        VIEW_COUNT-->
-<!--        FROM job_posts-->
-<!--        WHERE COMPANY_IDX = #{value}-->
-<!--        ORDER BY JOB_POSTS_IDX DESC-->
-<!--    </select>-->
+    <select id="listMyJobPosts" parameterType="long" resultType="EmploymentListDTO">
+        SELECT
+        jp.JOB_POSTS_IDX      AS jobPostsIdx,
+        jp.TITLE              AS title,
+        jp.POSTS_CREATED_AT   AS postsCreatedAt,
+        jp.VIEW_COUNT         AS viewCount,
+        jp.COMPANY_IDX        AS companyIdx,
+        cu.COMPANY_NAME       AS companyName
+        FROM job_posts jp
+        JOIN company_users cu
+        ON cu.COMPANY_IDX = jp.COMPANY_IDX
+        WHERE jp.COMPANY_IDX = #{value}
+        ORDER BY jp.JOB_POSTS_IDX DESC
+    </select>
 
 
 </mapper>

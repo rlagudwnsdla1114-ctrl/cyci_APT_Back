@@ -31,7 +31,7 @@ public class JobSeekerUserController {
     public ResponseEntity<?> signup(@RequestBody JobSeekerUserDTO jobSeekerUserDTO){
         log.info("/api/jobseeker/signup");
         log.info("data {}", jobSeekerUserDTO.toString());
-        jobSeekerUserService.jbSignup(jobSeekerUserDTO);
+        jobSeekerUserService.signup(jobSeekerUserDTO);
 
         return ResponseEntity.ok("ok");
     }
@@ -40,7 +40,7 @@ public class JobSeekerUserController {
     @PostMapping("/login")
     public  ResponseEntity<ApiResponse<String>> login(@RequestBody JobseekerLoginDTO jobseekerLoginDTO){
 
-        return ApiResponse.success(jobSeekerUserService.jbLogin(jobseekerLoginDTO));
+        return ApiResponse.success(jobSeekerUserService.login(jobseekerLoginDTO));
     }
 
     @PostMapping("/logout")
