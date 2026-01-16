@@ -22,4 +22,7 @@ public interface EmploymentMapper {
 
     List<EmploymentListDTO> listMyJobPosts(long companyIdx);
 
+    int deleteMyJobPost(@Param("jobPostsIdx") Long jobPostsIdx,
+                        @Param("companyIdx") Long companyIdx);
+
 }

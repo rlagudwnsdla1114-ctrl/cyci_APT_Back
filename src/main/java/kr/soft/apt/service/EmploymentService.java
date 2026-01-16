@@ -45,4 +45,13 @@ public class EmploymentService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "수정할 게시글이 없거나 권한이 없습니다.");
         }
     }
+
+    public void deleteMyJobPost(Long jobPostsIdx, Long companyIdx) {
+        int affected = employmentMapper.deleteMyJobPost(jobPostsIdx, companyIdx);
+
+        // ✅ 내 글이 아니거나 없는 글이면 0행 삭제됨 -> 예외 처리
+        if (affected == 0) {
+            throw new RuntimeException("삭제할 공고가 없거나 권한이 없습니다.");
+        }
+    }
 }
