@@ -50,7 +50,7 @@ public class AIService {
         HttpEntity<AIMatchRequest> entity = new HttpEntity<>(req, headers);
 
         ResponseEntity<AIMatchResponse> res = restTemplate.exchange(
-                aiServer + "/match",
+                aiServer + "/match/jobseeker",
                 HttpMethod.POST,
                 entity,
                 AIMatchResponse.class
