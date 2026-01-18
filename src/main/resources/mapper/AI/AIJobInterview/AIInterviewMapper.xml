@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.soft.apt.mapper.AI.AIMapper">
+
+    <select id="interjobidx" resultType="CoverPostsDTO">
+        SELECT
+        COVER_POSTS_IDX,
+        APPLY_MOTIVE,
+        GROWTH_PROCESS,
+        PERSONALITY,
+        JOB_EXPERIENCE,
+        HOPE_JOB,
+        JOBSEEKER_IDX
+        FROM COVER_POSTS
+        WHERE JOBSEEKER_IDX = #{jobseekerIdx}
+        ORDER BY COVER_POSTS_IDX DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectCoverByCoverPostsIdx" resultType="CoverPostsDTO">
+        SELECT
+        COVER_POSTS_IDX,
+        APPLY_MOTIVE,
+        GROWTH_PROCESS,
+        PERSONALITY,
+        JOB_EXPERIENCE,
+        HOPE_JOB,
+        JOBSEEKER_IDX
+        FROM COVER_POSTS
+        WHERE COVER_POSTS_IDX = #{coverPostsIdx}
+    </select>
+
+    <insert id="insertInterview" parameterType="InterviewResultDTO" useGeneratedKeys="true" keyProperty="idinterviewIdx">
+        INSERT INTO INTERVIEW_RESULT (
+        INTERVIEW_SCORE,
+        INTERVIEW_REASON,
+        COVER_POSTS_IDX
+        ) VALUES (
+        #{interviewScore},
+        #{interviewReason},
+        #{coverPostsIdx}
+        )
+    </insert>
+
+    <select id="selectInterview" resultType="InterviewResultDTO">
+        SELECT
+        IDINTERVIEW_IDX as idinterviewIdx,
+        INTERVIEW_SCORE as interviewScore,
+        INTERVIEW_REASON as interviewReason,
+        COVER_POSTS_IDX as coverPostsIdx
+        FROM INTERVIEW_RESULT
+        WHERE IDINTERVIEW_IDX = #{idinterviewIdx}
+    </select>
+
+</mapper>

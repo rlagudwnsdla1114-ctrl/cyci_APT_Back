@@ -1,4 +1,4 @@
-package kr.soft.apt.dto.AI;
+package kr.soft.apt.dto.AI.AIMatch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
