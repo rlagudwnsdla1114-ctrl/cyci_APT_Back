@@ -4,9 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import kr.soft.apt.common.ApiResponse;
 import kr.soft.apt.dto.Employment.EmploymentListDTO;
 import kr.soft.apt.dto.Employment.EmploymentReadDTO;
-import kr.soft.apt.dto.Employment.EmploymentUpdateDTO;
-import kr.soft.apt.dto.Employment.EmploymentWriteDTO;
-import kr.soft.apt.service.EmploymentService;
+import kr.soft.apt.service.Employment.CompanyEmploymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/jobseeker/employment")
 public class JobseekerEmploymentController {
     @Autowired
-    private EmploymentService employmentService;
+    private CompanyEmploymentService companyEmploymentService;
 
 
     // ✅ 공고 상세: 내 회사 글만 조회(권한 체크)
@@ -29,14 +27,14 @@ public class JobseekerEmploymentController {
             HttpServletRequest request
     ) {
         Long companyIdx = (Long) request.getAttribute("userIdx");
-        return ApiResponse.success(employmentService.readJobPost(jobPostsIdx, companyIdx));
+        return ApiResponse.success(companyEmploymentService.readJobPost(jobPostsIdx, companyIdx));
     }
 
     // ✅ 내 공고 목록
     @GetMapping
     public ResponseEntity<ApiResponse<List<EmploymentListDTO>>> listMy(HttpServletRequest request) {
         Long companyIdx = (Long) request.getAttribute("userIdx");
-        return ApiResponse.success(employmentService.listMyJobPosts(companyIdx));
+        return ApiResponse.success(companyEmploymentService.listMyJobPosts(companyIdx));
     }
 
 }

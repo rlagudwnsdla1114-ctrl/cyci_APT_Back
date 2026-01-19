@@ -5,7 +5,10 @@ import lombok.Data;
 @Data
 public class EmploymentReadDTO {
     private Long jobPostsIdx;
+    private String companyName;
+    private int viewCount;
     private String attachFile;
+    private String attachFileOrigin;
     private String title;
     private Integer recruitCount;
     private String employmentType;

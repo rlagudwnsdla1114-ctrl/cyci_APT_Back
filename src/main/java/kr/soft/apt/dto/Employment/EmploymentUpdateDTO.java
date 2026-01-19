@@ -10,6 +10,7 @@ public class EmploymentUpdateDTO {
     // SET에 필요
     private String title;
     private String attachFile;
+    private String attachFileOrigin;
     private Integer recruitCount;
     private String employmentType;
     private String salary;

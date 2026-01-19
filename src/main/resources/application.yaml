@@ -8,16 +8,16 @@ spring:
     username: root
     password: 1234
 
-mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
-  type-aliases-package: kr.soft.apt.dto    # DTO 위치
-  configuration:
-    map-underscore-to-camel-case: true      # user_id -> userId 자동 매핑
-
   data:
     redis:
       host: localhost
       port: 6379
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: kr.soft.apt.dto
+  configuration:
+    map-underscore-to-camel-case: true
 
 server:
   port: 8080
@@ -25,4 +25,5 @@ server:
 jwt:
   secret: my-super-secret-key-12345678901234567890
 
-
+app:
+  upload-dir: uploads/attachFile
