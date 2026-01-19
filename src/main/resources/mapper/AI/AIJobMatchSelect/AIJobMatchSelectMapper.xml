@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.soft.apt.mapper.AI.AIListMapper">
+
+    <select id="selectJobMatch" resultType="SelectJobMatchDTO">
+        SELECT
+            jm.JOB_MATCHING_IDX AS mIdx,
+            cu.COMPANY_NAME AS cName,
+            jp.TITLE AS jobPos,
+            IFNULL(jm.JOB_MATCH_SCORE, 0) AS mRate,
+            DATE(jm.MATCHING_CREATEAT) AS mDate,
+            IFNULL(ja.STATUS, '확인완료') AS mStatus
+        FROM jobseeker_matching jm
+        JOIN company_users cu
+            ON cu.COMPANY_IDX = jm.COMPANY_IDX
+        JOIN job_posts jp
+            ON jp.JOB_POSTS_IDX = jm.JOB_POSTS_IDX
+        LEFT JOIN jobseeker_applicant ja
+            ON ja.JOBSEEKER_IDX = jm.JOBSEEKER_IDX
+            AND ja.COMPANY_IDX   = jm.COMPANY_IDX
+            AND ja.JOB_POSTS_IDX = jm.JOB_POSTS_IDX
+        WHERE jm.JOBSEEKER_IDX = #{jobseekerIdx}
+        ORDER BY jm.MATCHING_CREATEAT DESC
+        LIMIT 20
+    </select>
+
+</mapper>
