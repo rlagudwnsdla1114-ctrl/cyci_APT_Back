@@ -44,16 +44,5 @@ public class CompanyUserController {
         return ApiResponse.success(companyUserService.login(companyLoginDTO));
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-
-        String redisKey = (String) request.getAttribute("redisKey"); // company:idx
-        String userId = (String) request.getAttribute("userId");
-
-        if (redisKey != null) redisTokenService.deleteAccessToken(redisKey);
-        if (userId != null) redisTokenService.deleteRefreshToken(userId);
-
-        return ResponseEntity.ok("company-logout-ok");
-    }
 
 }

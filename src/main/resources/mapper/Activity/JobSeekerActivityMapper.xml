@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.soft.apt.mapper.Activity.JobSeekerActivityMapper">
+
+    <select id="selectStatus" resultType="string">
+        SELECT STATUS
+        FROM jobseeker_applicant
+        WHERE JOBSEEKER_IDX = #{jobSeekerIdx}
+        AND JOB_POSTS_IDX = #{jobPostsIdx}
+        LIMIT 1
+    </select>
+
+    <!-- 관심공고(SCRAP) 저장: company_idx는 job_posts에서 가져옴 -->
+    <insert id="insertScrap">
+        INSERT INTO jobseeker_applicant
+        (STATUS, APPLIED_AT, JOBSEEKER_IDX, COMPANY_IDX, JOB_POSTS_IDX)
+        SELECT
+        'SCRAP', NOW(), #{jobSeekerIdx}, jp.COMPANY_IDX, jp.JOB_POSTS_IDX
+        FROM job_posts jp
+        WHERE jp.JOB_POSTS_IDX = #{jobPostsIdx}
+    </insert>
+
+    <delete id="deleteScrap">
+        DELETE FROM jobseeker_applicant
+        WHERE JOBSEEKER_IDX = #{jobSeekerIdx}
+        AND JOB_POSTS_IDX = #{jobPostsIdx}
+        AND STATUS = 'SCRAP'
+    </delete>
+
+    <!-- 지원하기: 처음 지원이면 insert -->
+    <insert id="insertApply">
+        INSERT INTO jobseeker_applicant
+        (STATUS, APPLIED_AT, JOBSEEKER_IDX, COMPANY_IDX, JOB_POSTS_IDX)
+        SELECT
+        '검토중', NOW(), #{jobSeekerIdx}, jp.COMPANY_IDX, jp.JOB_POSTS_IDX
+        FROM job_posts jp
+        WHERE jp.JOB_POSTS_IDX = #{jobPostsIdx}
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE jobseeker_applicant
+        SET STATUS = #{status}
+        WHERE JOBSEEKER_IDX = #{jobSeekerIdx}
+        AND JOB_POSTS_IDX = #{jobPostsIdx}
+    </update>
+
+    <update id="touchAppliedAt">
+        UPDATE jobseeker_applicant
+        SET APPLIED_AT = NOW()
+        WHERE JOBSEEKER_IDX = #{jobSeekerIdx}
+        AND JOB_POSTS_IDX = #{jobPostsIdx}
+    </update>
+
+    <!-- 지원현황: SCRAP 제외 -->
+    <select id="listApplied" resultType="kr.soft.apt.dto.Activity.AppliedItemDTO">
+        SELECT
+        a.JOB_POSTS_IDX AS jobPostsIdx,
+        cu.COMPANY_NAME AS companyName,
+        jp.TITLE        AS title,
+        a.APPLIED_AT    AS appliedAt,
+        a.STATUS        AS status
+        FROM jobseeker_applicant a
+        JOIN job_posts jp     ON jp.JOB_POSTS_IDX = a.JOB_POSTS_IDX
+        JOIN company_users cu ON cu.COMPANY_IDX = a.COMPANY_IDX
+        WHERE a.JOBSEEKER_IDX = #{jobSeekerIdx}
+        AND a.STATUS != 'SCRAP'
+        ORDER BY a.APPLIED_AT DESC
+    </select>
+
+    <!-- 관심공고: SCRAP만 -->
+    <select id="listScrapped" resultType="kr.soft.apt.dto.Activity.ScrappedItemDTO">
+        SELECT
+        a.JOB_POSTS_IDX    AS jobPostsIdx,
+        cu.COMPANY_NAME    AS companyName,
+        jp.TITLE           AS title,
+        a.APPLIED_AT       AS scrappedAt,
+        jp.VIEW_COUNT      AS viewCount,
+        jp.POSTS_CREATED_AT AS postsCreatedAt
+        FROM jobseeker_applicant a
+        JOIN job_posts jp     ON jp.JOB_POSTS_IDX = a.JOB_POSTS_IDX
+        JOIN company_users cu ON cu.COMPANY_IDX = a.COMPANY_IDX
+        WHERE a.JOBSEEKER_IDX = #{jobSeekerIdx}
+        AND a.STATUS = 'SCRAP'
+        ORDER BY a.APPLIED_AT DESC
+    </select>
+
+</mapper>

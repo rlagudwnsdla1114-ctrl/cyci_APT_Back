@@ -12,6 +12,8 @@ public class RedisTokenService {
 
     //REDIS 저장 시간
     final long ACCESSEXP = 1000L * 60 * 30; // 30분
+    final long REFRESHEXP = 1000L * 60 * 60 * 24 * 14; // 14일 예시
+
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -37,6 +39,18 @@ public class RedisTokenService {
         return false;
     }
 
+    public void saveRefreshToken(String userId, String refreshToken) {
+        redisTemplate.opsForValue().set("refresh:" + userId, refreshToken, REFRESHEXP, TimeUnit.MILLISECONDS);
+    }
+
+    public boolean matchesRefreshToken(String userId, String refreshToken) {
+        String saved = getRefreshToken(userId);
+        return saved != null && saved.equals(refreshToken);
+    }
+
+    public void deleteAccessTokenByUserId(String userId) {
+        redisTemplate.delete("access:" + userId);
+    }
 
     // ✅ Refresh Token 조회
     public String getRefreshToken(String userId) {
