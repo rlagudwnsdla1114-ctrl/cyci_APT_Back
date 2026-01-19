@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.soft.apt.mapper.EditUserMapper">
+
+    <update id="editCompanyUser" parameterType="MemberDTO">
+        UPDATE COMPANY_USERS
+        SET COMPANY_NAME = #{cName},
+            COMPANY_REGISTRATION = #{cRegistration},
+            COMPANY_PHONE = #{cPhone},
+            COMPANY_SIZE = #{cSize},
+            COMPANY_REGION = #{cRegion}
+        WHERE COMPANY_IDX = #{cIdx}
+    </update>
+
+
+    <select id="getCompanyUser" parameterType="MemberDTO" resultType="MemberDTO">
+        SELECT
+            COMPANY_IDX          as cIdx,
+            COMPANY_EMAIL        as cEmail,
+            COMPANY_NAME         as cName,
+            COMPANY_REGISTRATION as cRegistration,
+            COMPANY_PHONE        as cPhone,
+            COMPANY_SIZE         as cSize,
+            COMPANY_REGION       as cRegion
+        FROM COMPANY_USERS
+        WHERE COMPANY_IDX = #{cIdx}
+    </select>
+
+
+    <update id="editJobseekerUser" parameterType="MemberDTO" >
+        UPDATE JOBSEEKER_USERS
+        SET JOBSEEKER_NAME = #{jName},
+            JOBSEEKER_BIRTH = #{jBirth},
+            JOBSEEKER_PHONE = #{jPhone}
+        WHERE JOBSEEKER_IDX = #{jIdx}
+    </update>
+
+    <select id="getJobseekerUser" parameterType="MemberDTO" resultType="MemberDTO">
+        SELECT
+            JOBSEEKER_IDX   AS jIdx,
+            JOBSEEKER_EMAIL AS jEmail,
+            JOBSEEKER_NAME  AS jName,
+            JOBSEEKER_BIRTH AS jBirth,
+            JOBSEEKER_PHONE AS jPhone
+        FROM JOBSEEKER_USERS
+        WHERE JOBSEEKER_IDX = #{jIdx}
+    </select>
+
+</mapper>
