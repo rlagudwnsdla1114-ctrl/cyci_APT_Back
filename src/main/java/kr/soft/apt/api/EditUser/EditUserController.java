@@ -33,7 +33,7 @@ public class EditUserController {
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setCIdx(userIdx);
 
-        MemberDTO result =editUserService.getCompanyUser(memberDTO);
+        MemberDTO result = editUserService.getCompanyUser(memberDTO);
         if (memberDTO!= null) {
             return ResponseEntity.ok(result);
         } else {

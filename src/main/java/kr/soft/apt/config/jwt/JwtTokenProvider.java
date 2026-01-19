@@ -37,10 +37,10 @@ public class JwtTokenProvider {
         return createToken(userIdx, userId, accessTokenValidity);
     }
 
-    // ✅ Refresh Token 생성
-//    public String createRefreshToken(Long userIdx, String userId) {
-//        return createToken(userIdx, userId, refreshTokenValidity);
-//    }
+     //✅ Refresh Token 생성
+    public String createRefreshToken(Long userIdx, String userId) {
+        return createToken(userIdx, userId, refreshTokenValidity);
+    }
 
     // 내부 공통 메서드
     private String createToken(Long userIdx, String userId, long validityMillis) {

@@ -43,17 +43,6 @@ public class JobSeekerUserController {
         return ApiResponse.success(jobSeekerUserService.login(jobseekerLoginDTO));
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-
-        String redisKey = (String) request.getAttribute("redisKey"); // jobseeker:idx
-        String userId = (String) request.getAttribute("userId");
-
-        if (redisKey != null) redisTokenService.deleteAccessToken(redisKey);
-        if (userId != null) redisTokenService.deleteRefreshToken(userId);
-
-        return ResponseEntity.ok("jobseeker-logout-ok");
-    }
 
 
 }

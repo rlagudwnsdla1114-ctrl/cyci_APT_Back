@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.soft.apt.mapper.Company.CompanyManagementMapper">
+
+    <!-- 내 공고 목록 + 지원자 수 -->
+    <select id="selectMyJobPosts" resultType="CompanyJobPostSummaryDTO">
+        SELECT
+            jp.JOB_POSTS_IDX AS jobPostsIdx,
+            jp.TITLE         AS title,
+            jp.RECRUIT_COUNT AS recruitCount,
+
+            CASE
+                WHEN STR_TO_DATE(TRIM(SUBSTRING_INDEX(jp.APPLICATION_PERIOD, ' ~ ', -1)), '%Y-%m-%d') >= CURDATE()
+                    THEN '진행중'
+                ELSE '마감'
+                END AS status,
+
+            COUNT(a.JOBSEEKER_APPLICANT_IDX) AS applicants
+
+        FROM job_posts jp
+                 LEFT JOIN jobseeker_applicant a
+                           ON a.JOB_POSTS_IDX = jp.JOB_POSTS_IDX
+                               AND (a.STATUS IS NULL OR TRIM(a.STATUS) != 'SCRAP')
+
+        WHERE jp.COMPANY_IDX = #{companyIdx}
+        GROUP BY jp.JOB_POSTS_IDX
+        ORDER BY jp.JOB_POSTS_IDX DESC
+    </select>
+
+
+    <!-- 공고별 지원자 목록 -->
+    <select id="selectApplicantsByJobPost" resultType="CompanyApplicantDTO">
+        SELECT
+        a.JOBSEEKER_APPLICANT_IDX AS jobseekerApplicantIdx,
+        a.JOBSEEKER_IDX           AS jobseekerIdx,
+        ju.JOBSEEKER_NAME         AS name,
+        ju.JOBSEEKER_EMAIL        AS email,
+        ju.JOBSEEKER_PHONE        AS phone,
+        DATE_FORMAT(a.APPLIED_AT, '%Y.%m.%d') AS appliedDate,
+        a.STATUS                  AS status,
+        a.JOB_POSTS_IDX           AS jobPostsIdx
+
+        FROM jobseeker_applicant a
+        JOIN job_posts jp        ON jp.JOB_POSTS_IDX = a.JOB_POSTS_IDX
+        JOIN jobseeker_users ju  ON ju.JOBSEEKER_IDX = a.JOBSEEKER_IDX
+
+        WHERE a.JOB_POSTS_IDX = #{jobPostsIdx}
+        AND jp.COMPANY_IDX  = #{companyIdx}
+        AND (a.STATUS IS NULL OR TRIM(a.STATUS) != 'SCRAP')
+
+        <if test="status != null and status != '' and status != '전체'">
+            AND a.STATUS = #{status}
+        </if>
+
+        ORDER BY a.APPLIED_AT DESC
+    </select>
+
+
+    <!-- 지원자 상태 변경 (내 공고 지원자만 변경 가능) -->
+    <update id="updateApplicantStatus">
+        UPDATE jobseeker_applicant a
+            JOIN job_posts jp ON jp.JOB_POSTS_IDX = a.JOB_POSTS_IDX
+            SET a.STATUS = #{status}
+        WHERE a.JOBSEEKER_APPLICANT_IDX = #{jobseekerApplicantIdx}
+          AND jp.COMPANY_IDX = #{companyIdx}
+    </update>
+
+    <select id="selectApplicantResume" resultType="CompanyApplicantResumeDTO">
+        SELECT
+            a.JOBSEEKER_APPLICANT_IDX AS jobseekerApplicantIdx,
+            a.JOBSEEKER_IDX           AS jobseekerIdx,
+            ju.JOBSEEKER_NAME         AS name,
+            ju.JOBSEEKER_EMAIL        AS email,
+            ju.JOBSEEKER_PHONE        AS phone,
+            DATE_FORMAT(a.APPLIED_AT, '%Y.%m.%d') AS appliedDate,
+            a.STATUS                  AS status,
+
+            jp.JOB_POSTS_IDX          AS jobPostsIdx,
+            jp.TITLE                  AS jobTitle,
+
+            cp.COVER_POSTS_IDX        AS coverPostsIdx,
+            cp.HOPE_JOB               AS hopeJob,
+            cp.HOPE_REGION            AS hopeRegion,
+            cp.EDUCATION              AS education,
+            cp.MILITARY_STATUS        AS militaryStatus,
+            cp.CAREER                 AS career,
+            cp.KEYSKILL               AS keyskill,
+            cp.CERTIFICATION          AS certification,
+            cp.LANGUAGE_SKILL         AS languageSkill,
+            cp.APPLY_MOTIVE           AS applyMotive,
+            cp.GROWTH_PROCESS         AS growthProcess,
+            cp.PERSONALITY            AS personality,
+            cp.JOB_EXPERIENCE         AS jobExperience,
+            cp.IMAGE_URL              AS imageUrl
+
+        FROM jobseeker_applicant a
+                 JOIN job_posts jp       ON jp.JOB_POSTS_IDX = a.JOB_POSTS_IDX
+                 JOIN jobseeker_users ju ON ju.JOBSEEKER_IDX = a.JOBSEEKER_IDX
+                 LEFT JOIN cover_posts cp ON cp.JOBSEEKER_IDX = a.JOBSEEKER_IDX
+
+        WHERE a.JOBSEEKER_APPLICANT_IDX = #{jobseekerApplicantIdx}
+          AND jp.COMPANY_IDX = #{companyIdx}
+    </select>
+
+</mapper>
