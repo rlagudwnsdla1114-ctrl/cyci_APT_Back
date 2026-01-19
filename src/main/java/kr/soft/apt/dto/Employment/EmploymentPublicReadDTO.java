@@ -3,11 +3,14 @@ package kr.soft.apt.dto.Employment;
 import lombok.Data;
 
 @Data
-public class EmploymentWriteDTO {
-    private String attachFile;
-    private String attachFileOrigin;
+public class EmploymentPublicReadDTO {
+    private Long jobPostsIdx;
+
+    private String companyName;
+    private Long viewCount;
+
     private String title;
-    private int recruitCount;
+    private Integer recruitCount;
     private String employmentType;
     private String salary;
     private String workTime;
@@ -15,5 +18,10 @@ public class EmploymentWriteDTO {
     private String education;
     private String techStack;
     private String applicationPeriod;
-    private long companyIdx;
+    private String postsCreatedAt;
+
+    private String attachFile;
+    private String attachFileOrigin;
+
+    private Long companyIdx;
 }

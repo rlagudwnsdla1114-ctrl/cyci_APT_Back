@@ -2,13 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.soft.apt.mapper.EmploymentMapper">
+<mapper namespace="kr.soft.apt.mapper.Employment.CompanyEmploymentMapper">
     
     <insert id="writeEmployment" parameterType="EmploymentWriteDTO">
         INSERT INTO job_posts
             (
                 VIEW_COUNT,
                 ATTACH_FILE,
+                ATTACH_FILE_ORIGIN,
                 TITLE,
                 RECRUIT_COUNT,
                 EMPLOYMENT_TYPE,
@@ -25,6 +26,7 @@
             (
                 0,
                 #{attachFile},
+                #{attachFileOrigin},
                 #{title},
                 #{recruitCount},
                 #{employmentType},
@@ -42,39 +44,47 @@
 
     <select id="readMyJobPost" parameterType="map" resultType="EmploymentReadDTO">
         SELECT
-        JOB_POSTS_IDX,
-        ATTACH_FILE,
-        TITLE,
-        RECRUIT_COUNT,
-        EMPLOYMENT_TYPE,
-        SALARY,
-        WORK_TIME,
-        CAREER,
-        EDUCATION,
-        TECH_STACK,
-        APPLICATION_PERIOD,
-        POSTS_CREATED_AT,
-        COMPANY_IDX
-        FROM job_posts
-        WHERE JOB_POSTS_IDX = #{jobPostsIdx}
-        AND COMPANY_IDX = #{companyIdx}
-        LIMIT 1
+        a.JOB_POSTS_IDX,
+        b.COMPANY_NAME,
+        a.VIEW_COUNT,
+        a.ATTACH_FILE,
+        a.ATTACH_FILE_ORIGIN,
+        a.TITLE,
+        a.RECRUIT_COUNT,
+        a.EMPLOYMENT_TYPE,
+        a.SALARY,
+        a.WORK_TIME,
+        a.CAREER,
+        a.EDUCATION,
+        a.TECH_STACK,
+        a.APPLICATION_PERIOD,
+        a.POSTS_CREATED_AT,
+        a.COMPANY_IDX
+        FROM job_posts a, company_users b
+        WHERE a.COMPANY_IDX = b.COMPANY_IDX
+        AND a.JOB_POSTS_IDX = #{jobPostsIdx}
+        AND a.COMPANY_IDX = #{companyIdx}
     </select>
 
 
     <update id="updateMyJobPost" parameterType="EmploymentUpdateDTO">
         UPDATE job_posts
-        SET
-        TITLE = #{title},
-        ATTACH_FILE = #{attachFile},
-        RECRUIT_COUNT = #{recruitCount},
-        EMPLOYMENT_TYPE = #{employmentType},
-        SALARY = #{salary},
-        WORK_TIME = #{workTime},
-        CAREER = #{career},
-        EDUCATION = #{education},
-        TECH_STACK = #{techStack},
-        APPLICATION_PERIOD = #{applicationPeriod}
+        <set>
+            TITLE = #{title},
+            RECRUIT_COUNT = #{recruitCount},
+            EMPLOYMENT_TYPE = #{employmentType},
+            SALARY = #{salary},
+            WORK_TIME = #{workTime},
+            CAREER = #{career},
+            EDUCATION = #{education},
+            TECH_STACK = #{techStack},
+            APPLICATION_PERIOD = #{applicationPeriod}
+
+            <if test="attachFile != null and attachFile != ''">
+                , ATTACH_FILE = #{attachFile}
+                , ATTACH_FILE_ORIGIN = #{attachFileOrigin}
+            </if>
+        </set>
         WHERE JOB_POSTS_IDX = #{jobPostsIdx}
         AND COMPANY_IDX = #{companyIdx}
     </update>
@@ -99,6 +109,15 @@
         WHERE JOB_POSTS_IDX = #{jobPostsIdx}
         AND COMPANY_IDX = #{companyIdx}
     </delete>
+
+    <select id="selectAttachmentInfoMy" resultType="AttachmentInfoDTO">
+        SELECT
+        ATTACH_FILE        AS attachFile,
+        ATTACH_FILE_ORIGIN AS attachFileOrigin
+        FROM JOB_POSTS
+        WHERE JOB_POSTS_IDX = #{jobPostsIdx}
+        AND COMPANY_IDX   = #{companyIdx}
+    </select>
 
 
 </mapper>

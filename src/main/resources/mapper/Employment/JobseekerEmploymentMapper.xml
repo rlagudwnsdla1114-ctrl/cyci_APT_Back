@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.soft.apt.mapper.Employment.JobSeekerEmploymentMapper">
+
+    <select id="listPublicJobPosts" resultType="EmploymentPublicListDTO">
+        SELECT
+        jp.JOB_POSTS_IDX      AS jobPostsIdx,
+        cu.COMPANY_NAME       AS companyName,
+        jp.TITLE              AS title,
+        jp.EMPLOYMENT_TYPE    AS employmentType,
+        jp.CAREER             AS career,
+        jp.EDUCATION          AS education,
+        jp.SALARY             AS salary,
+        jp.TECH_STACK         AS techStack,
+        jp.VIEW_COUNT         AS viewCount,
+        jp.POSTS_CREATED_AT   AS postsCreatedAt
+        FROM job_posts jp
+        JOIN company_users cu
+        ON cu.COMPANY_IDX = jp.COMPANY_IDX
+        ORDER BY jp.JOB_POSTS_IDX DESC
+    </select>
+
+    <select id="readPublicJobPost" parameterType="long" resultType="EmploymentPublicReadDTO">
+        SELECT
+        jp.JOB_POSTS_IDX         AS jobPostsIdx,
+        cu.COMPANY_NAME          AS companyName,
+        jp.VIEW_COUNT            AS viewCount,
+        jp.TITLE                 AS title,
+        jp.RECRUIT_COUNT         AS recruitCount,
+        jp.EMPLOYMENT_TYPE       AS employmentType,
+        jp.SALARY                AS salary,
+        jp.WORK_TIME             AS workTime,
+        jp.CAREER                AS career,
+        jp.EDUCATION             AS education,
+        jp.TECH_STACK            AS techStack,
+        jp.APPLICATION_PERIOD    AS applicationPeriod,
+        jp.POSTS_CREATED_AT      AS postsCreatedAt,
+        jp.ATTACH_FILE           AS attachFile,
+        jp.ATTACH_FILE_ORIGIN    AS attachFileOrigin,
+        jp.COMPANY_IDX           AS companyIdx
+        FROM job_posts jp
+        JOIN company_users cu
+        ON cu.COMPANY_IDX = jp.COMPANY_IDX
+        WHERE jp.JOB_POSTS_IDX = #{jobPostsIdx}
+    </select>
+
+    <update id="increaseViewCount" parameterType="long">
+        UPDATE job_posts
+        SET VIEW_COUNT = VIEW_COUNT + 1
+        WHERE JOB_POSTS_IDX = #{jobPostsIdx}
+    </update>
+
+    <select id="selectAttachmentInfoPublic" parameterType="long" resultType="AttachmentInfoDTO">
+        SELECT
+        ATTACH_FILE        AS attachFile,
+        ATTACH_FILE_ORIGIN AS attachFileOrigin
+        FROM JOB_POSTS
+        WHERE JOB_POSTS_IDX = #{jobPostsIdx}
+    </select>
+
+</mapper>

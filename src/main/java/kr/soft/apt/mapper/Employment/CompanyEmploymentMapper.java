@@ -1,9 +1,6 @@
-package kr.soft.apt.mapper;
+package kr.soft.apt.mapper.Employment;
 
-import kr.soft.apt.dto.Employment.EmploymentListDTO;
-import kr.soft.apt.dto.Employment.EmploymentReadDTO;
-import kr.soft.apt.dto.Employment.EmploymentUpdateDTO;
-import kr.soft.apt.dto.Employment.EmploymentWriteDTO;
+import kr.soft.apt.dto.Employment.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface EmploymentMapper {
+public interface CompanyEmploymentMapper {
 
     void writeEmployment(EmploymentWriteDTO employmentWriteDTO);
 
@@ -24,5 +21,8 @@ public interface EmploymentMapper {
 
     int deleteMyJobPost(@Param("jobPostsIdx") Long jobPostsIdx,
                         @Param("companyIdx") Long companyIdx);
+
+    AttachmentInfoDTO selectAttachmentInfoMy(@Param("jobPostsIdx") Long jobPostsIdx,
+                                             @Param("companyIdx") Long companyIdx);
 
 }
