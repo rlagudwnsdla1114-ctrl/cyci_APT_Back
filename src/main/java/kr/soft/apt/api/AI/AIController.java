@@ -2,6 +2,7 @@ package kr.soft.apt.api.AI;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.soft.apt.config.jwt.JwtTokenProvider;
+import kr.soft.apt.dto.AI.AIComMatch.ComPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.InterviewResultDTO;
 import kr.soft.apt.dto.AI.AIMatch.AIRecommendedCompanyDTO;
 import kr.soft.apt.dto.AI.AIMatch.JobRecommendReqDTO;
@@ -81,5 +82,19 @@ public class AIController {
     public InterviewResultDTO getResult(@PathVariable("id") long id) {
         // 여기서 서비스의 getInterviewResult를 호출합니다.
         return aiService.getInterviewResult(id);
+    }
+
+
+
+    // 기업 AI 매칭
+    @PostMapping("/JobPostsList")
+    public List<ComPostsDTO> jobPostsList(@RequestHeader(value = "Authorization",required = false) String authorization) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return List.of();
+        }
+        String token = authorization.substring(7);
+        Long userIdx = jwtTokenProvider.getUserIdx(token);
+        int companyIdx = userIdx.intValue();
+        return aiService.getJobPostsByCompany(companyIdx);
     }
 }

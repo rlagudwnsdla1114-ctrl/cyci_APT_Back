@@ -1,5 +1,6 @@
 package kr.soft.apt.service.AI;
 
+import kr.soft.apt.dto.AI.AIComMatch.ComPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.CoverPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.InterviewResultDTO;
 import kr.soft.apt.dto.AI.AIMatch.*;
@@ -207,5 +208,12 @@ public class AIService {
     }
     public InterviewResultDTO getInterviewResult(long idinterviewIdx) {
         return aiMapper.selectInterview(idinterviewIdx);
+    }
+
+
+
+    // AI 기업 매칭
+    public List<ComPostsDTO> getJobPostsByCompany(int companyIdx) {
+        return aiMapper.jobPosts(companyIdx);
     }
 }

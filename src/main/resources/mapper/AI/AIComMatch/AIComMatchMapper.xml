@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.soft.apt.mapper.AI.AIMapper">
+
+    <select id="jobPosts" resultType="ComPostsDTO">
+        select
+            JOB_POSTS_IDX,
+            TITLE,
+            TECH_STACK,
+            POSTS_CREATED_AT
+        from
+            JOB_POSTS
+        where
+            COMPANY_IDX = #{companyIdx};
+    </select>
+
+</mapper>
