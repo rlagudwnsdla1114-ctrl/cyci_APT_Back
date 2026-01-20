@@ -6,11 +6,17 @@ import kr.soft.apt.dto.Cover.CoverReadDTO;
 import kr.soft.apt.dto.Cover.CoverUpdateDTO;
 import kr.soft.apt.dto.Cover.CoverWriteDTO;
 import kr.soft.apt.service.CoverService;
+import kr.soft.apt.util.MultipartInputStreamFileResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,6 +32,9 @@ public class CoverController {
 
     @Autowired
     private CoverService coverService;
+
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final String AI_BASE = "http://localhost:8081";
 
     @GetMapping("/userinfo")
     public CoverInfoDTO userInfo(HttpServletRequest request) {
@@ -107,6 +116,34 @@ public class CoverController {
 
         coverService.updateCover(upd);
         return ResponseEntity.ok("update-ok");
+    }
+
+    @PostMapping(value = "/essay-ocr", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> essayOcr(@RequestPart("file") MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "파일이 비어있음"));
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", new MultipartInputStreamFileResource(file));
+
+        HttpEntity<MultiValueMap<String, Object>> req = new HttpEntity<>(body, headers);
+
+        try {
+            ResponseEntity<Map> resp =
+                    restTemplate.postForEntity(AI_BASE + "/ocr/essay", req, Map.class);
+
+            return ResponseEntity.status(resp.getStatusCode()).body(resp.getBody());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    Map.of("message", "OCR 서버 호출 실패", "error", e.getMessage())
+            );
+        }
     }
 
 
