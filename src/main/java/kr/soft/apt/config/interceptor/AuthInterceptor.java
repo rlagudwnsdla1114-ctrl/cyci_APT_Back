@@ -43,14 +43,29 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String userId = jwtTokenProvider.getUserId(token);
         long idx = jwtTokenProvider.getUserIdx(token);
-        String prefix = request.getRequestURI().startsWith("/api/company") ? "company:" : "jobseeker:";
-        String redisKey = prefix + idx;
 
-        // ✅ 3. Redis에 등록된 토큰인지 확인
-        if (!redisTokenService.existsAccessToken(redisKey, token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("⚠️ Redis에 등록되지 않은 토큰입니다.");
-            return false;
+        String uri = request.getRequestURI();
+
+        String companyKey = "company:" + idx;
+        String jobseekerKey = "jobseeker:" + idx;
+
+        String redisKey;
+
+        if (uri.startsWith("/api/company")) {
+            redisKey = companyKey;
+        } else if (uri.startsWith("/api/jobseeker")) {
+            redisKey = jobseekerKey;
+        } else {
+            // ✅ /api/user 같은 공통 API는 둘 다 확인
+            if (redisTokenService.existsAccessToken(companyKey, token)) {
+                redisKey = companyKey;
+            } else if (redisTokenService.existsAccessToken(jobseekerKey, token)) {
+                redisKey = jobseekerKey;
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("⚠️ Redis에 등록되지 않은 토큰입니다.");
+                return false;
+            }
         }
 
         log.info("test");
