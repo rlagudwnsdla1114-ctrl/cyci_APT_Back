@@ -1,5 +1,6 @@
 package kr.soft.apt.mapper.AI;
 
+import kr.soft.apt.dto.AI.AIComMatch.ComPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.CoverPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.InterviewResultDTO;
 import kr.soft.apt.dto.AI.AIMatch.AIRecommendedCompanyDTO;
@@ -38,4 +39,9 @@ public interface AIMapper {
     int insertInterview(InterviewResultDTO interviewResultDTO);
 
     InterviewResultDTO selectInterview(@Param("idinterviewIdx") long idinterviewIdx);
+
+
+
+    //기업 AI 매칭
+    List<ComPostsDTO> jobPosts(@Param("companyIdx") int companyIdx);
 }
