@@ -1,14 +1,20 @@
 package kr.soft.apt.mapper.EditUser;
 
-import kr.soft.apt.dto.Member.MemberDTO;
+import kr.soft.apt.dto.EditUser.EditCompanyUserDTO;
+import kr.soft.apt.dto.EditUser.EditJobseekerUserDTO;
+import kr.soft.apt.dto.EditUser.GetCompanyUserDTO;
+import kr.soft.apt.dto.EditUser.GetJobseekerUserDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface EditUserMapper {
-    void editCompanyUser(MemberDTO memberDTO);
-    MemberDTO getCompanyUser(MemberDTO memberDTO);
+    int editCompanyUser(EditCompanyUserDTO dto);
 
-    void editJobseekerUser(MemberDTO memberDTO);
-    MemberDTO getJobseekerUser(MemberDTO memberDTO);
+    GetCompanyUserDTO getCompanyUser(@Param("cIdx") long cIdx);
+
+    int editJobseekerUser(EditJobseekerUserDTO dto);
+
+    GetJobseekerUserDTO getJobseekerUser(@Param("jIdx") long jIdx);
 
 }
