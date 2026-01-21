@@ -4,9 +4,9 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.soft.apt.mapper.AI.AIListMapper">
 
-    <select id="selectJobMatch" resultType="SelectJobMatchDTO">
+    <select id="selectJobMatch" resultType="SelectJobMatchDTO" parameterType="long">
         SELECT
-            jm.JOB_MATCHING_IDX AS mIdx,
+            jm.JOB_POSTS_IDX AS mIdx,
             cu.COMPANY_NAME AS cName,
             jp.TITLE AS jobPos,
             IFNULL(jm.JOB_MATCH_SCORE, 0) AS mRate,

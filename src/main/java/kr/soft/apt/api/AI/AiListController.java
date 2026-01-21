@@ -20,14 +20,11 @@ public class AiListController {
 
     @Autowired
     private AIListService aiListService;
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+
 
     @GetMapping("/selectJobMatch")
-    public List<SelectJobMatchDTO> selectJobMatch(@RequestHeader(value = "Authorization", required = false) String authorization) {
-        String token = authorization.substring(7);
-        Long userIdx = jwtTokenProvider.getUserIdx(token);
-        int jobseekerIdx = userIdx.intValue();
+    public List<SelectJobMatchDTO> selectJobMatch(HttpServletRequest request) {
+        long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
         return aiListService.selectJobMatch(jobseekerIdx);
     }
 }

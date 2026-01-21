@@ -76,12 +76,14 @@
 
     <select id="jobmatchselect" resultType="AIRecommendedCompanyDTO">
         select
+            jm.JOB_MATCHING_IDX as idx,
             jm.JOB_MATCH_SCORE as score,
             cu.COMPANY_NAME as company,
             jp.TITLE as title,
             jp.SALARY as salary,
             cu.COMPANY_REGION as loc,
-            jm.JOB_AI_REASON as reason
+            jm.JOB_AI_REASON as reason,
+            jm.JOB_POSTS_IDX as jpIdx
         from
             JOBSEEKER_MATCHING jm
         inner join COMPANY_USERS cu

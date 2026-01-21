@@ -8,5 +8,5 @@ import java.util.List;
 
 @Mapper
 public interface AIListMapper {
-    List<SelectJobMatchDTO> selectJobMatch(@Param("jobseekerIdx") int jobseekerIdx);
+    List<SelectJobMatchDTO> selectJobMatch(long jobseekerIdx);
 }
