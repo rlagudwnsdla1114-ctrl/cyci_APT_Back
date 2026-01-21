@@ -1,6 +1,6 @@
 package kr.soft.apt.service.AI;
 
-import kr.soft.apt.dto.AI.AIComMatch.ComPostsDTO;
+import kr.soft.apt.dto.AI.AIComMatch.*;
 import kr.soft.apt.dto.AI.AIInterview.CoverPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.InterviewResultDTO;
 import kr.soft.apt.dto.AI.AIMatch.*;
@@ -11,10 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AIService {
@@ -91,7 +88,7 @@ public class AIService {
             aiMapper.jobmatchinsert(dto);
         }
 
-        return aiMapper.jobmatchselect((int) jobseekerIdx, safeTopN);
+        return aiMapper.jobmatchselect(jobseekerIdx, safeTopN);
     }
 
     // AI 구직자 면접
@@ -215,5 +212,143 @@ public class AIService {
     // AI 기업 매칭
     public List<ComPostsDTO> getJobPostsByCompany(int companyIdx) {
         return aiMapper.jobPosts(companyIdx);
+    }
+
+    @Transactional
+    public List<AIRecommendComDTO> recommendJobPosts(int compnayIdx, long jobPostsIdx, int topN) {
+        System.out.println("===== [AI COMPANY MATCH START] =====");
+        System.out.println("companyIdx = " + compnayIdx);
+        System.out.println("jobPostsIdx = " + jobPostsIdx);
+        System.out.println("topN = " + topN);
+
+        Integer oCompanyIdx = aiMapper.selectCompanyIdx(jobPostsIdx);
+
+        System.out.println("[CHECK] oCompanyIdx = " + oCompanyIdx);
+
+        if (oCompanyIdx == null || !oCompanyIdx.equals(compnayIdx)) {
+            return List.of();
+        }
+
+        JobPostsDTO jobPosts = aiMapper.selectJobPostsIdx(jobPostsIdx);
+
+        System.out.println("[JOB_POSTS] = " + jobPosts);
+
+        if(jobPosts == null) return List.of();
+
+        List<CompanyCoverCandidateDTO> candidates = aiMapper.selectCandidates(jobPostsIdx);
+
+        System.out.println("[CANDIDATES SIZE] = " + (candidates == null ? "null" : candidates.size()));
+        if (candidates == null || candidates.isEmpty()) {
+            System.out.println("❌ 지원자 없음 → AI 호출 안 함");
+            return List.of();
+        }
+
+
+        int limit = (topN <= 0) ? 20 : Math.min(topN, 20);
+
+        Map<String, Object> payload = new HashMap<>();
+        Map<String, Object> jobObj = new HashMap<>();
+        jobObj.put("jobPostsIdx", jobPosts.getJobPostIdx());
+        jobObj.put("title", jobPosts.getTitle());
+        jobObj.put("techStack", jobPosts.getTechStack());
+        jobObj.put("career", jobPosts.getCareer());
+        jobObj.put("education", jobPosts.getEducation());
+        jobObj.put("employmentType", jobPosts.getEmploymentType());
+        jobObj.put("salary", jobPosts.getSalary());
+
+        payload.put("job_post", jobObj);
+        payload.put("topN", limit);
+
+        List<Map<String, Object>> covers = new ArrayList<>();
+        for(CompanyCoverCandidateDTO c : candidates) {
+
+            System.out.println(" - candidate: " + c.getJobseekerName()
+                    + ", coverPostsIdx=" + c.getCoverPostsIdx()
+                    + ", applicantIdx=" + c.getCompanyApplicantIdx());
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("companyApplicantIdx",c.getCompanyApplicantIdx());
+            map.put("jobseekerIdx",c.getJobseekerIdx());
+            map.put("coverPostsIdx",c.getCoverPostsIdx());
+            map.put("jobseekerName",c.getJobseekerName());
+            map.put("hopeJob", c.getHopeJob());
+            map.put("hopeRegion",c.getHopeRegion());
+            map.put("education",c.getEducation());
+            map.put("career",c.getCareer());
+            map.put("keySkill", c.getKeyskill());
+            map.put("applyMotive",c.getApplyMotive());
+            map.put("growthProcess",c.getGrowthProcess());
+            map.put("personality",c.getPersonality());
+            map.put("jobExperience",c.getJobExperience());
+
+            covers.add(map);
+        }
+        payload.put("cover_posts", covers);
+        System.out.println("===== [AI PAYLOAD] =====");
+        System.out.println(payload);
+
+        AIMatchDTO aiResult = callAI(payload);
+
+        System.out.println("===== [AI RESPONSE RAW] =====");
+        System.out.println(aiResult);
+
+        if (aiResult == null) {
+            System.out.println("❌ aiResult NULL");
+            return List.of();
+        }
+        if (aiResult.getResults() == null) {
+            System.out.println("❌ aiResult.results NULL");
+            return List.of();
+        }
+        if (aiResult.getResults().isEmpty()) {
+            System.out.println("⚠️ aiResult.results EMPTY");
+            return List.of();
+        }
+
+        aiMapper.deleteCompanyMatching(compnayIdx, jobPostsIdx);
+
+        System.out.println("[DELETE DONE]");
+
+        List<AIRecommendComDTO> result = new  ArrayList<>();
+
+        for(AIMatchDTO.ResultDTO r : aiResult.getResults()) {
+
+            System.out.println("[AI RESULT ITEM] " + r);
+
+            AIRecommendComDTO aiRecommendComDTO = new AIRecommendComDTO();
+            aiRecommendComDTO.setCompanyIdx(compnayIdx);
+            aiRecommendComDTO.setJobPostsIdx(jobPostsIdx);
+
+            aiRecommendComDTO.setCompnayApplicantIdx(r.getCompnayApplicantIdx());
+
+            aiRecommendComDTO.setJobseekersIdx(r.getJobseekerIdx());
+            aiRecommendComDTO.setCoverPostsIdx(r.getCoverPostsIdx());
+            aiRecommendComDTO.setName(r.getJobseekerName());
+            aiRecommendComDTO.setMatchRate((int) Math.round(r.getScore()));
+            aiRecommendComDTO.setReason(r.getReason());
+
+            int inserted = aiMapper.insertCompanyMatching(aiRecommendComDTO);
+
+            System.out.println(" → insert result = " + inserted);
+
+            result.add(aiRecommendComDTO);
+        }
+        System.out.println("===== [AI COMPANY MATCH END] =====");
+        return result;
+    }
+
+    private AIMatchDTO callAI(Map<String, Object> payload) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload,headers);
+
+        ResponseEntity<AIMatchDTO> res = restTemplate.exchange(
+                aiServer + "/match/company",
+                HttpMethod.POST,
+                entity,
+                AIMatchDTO.class
+        );
+        return res.getBody();
     }
 }
