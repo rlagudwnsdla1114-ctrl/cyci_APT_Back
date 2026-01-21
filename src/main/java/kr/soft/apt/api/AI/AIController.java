@@ -2,7 +2,9 @@ package kr.soft.apt.api.AI;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.soft.apt.config.jwt.JwtTokenProvider;
+import kr.soft.apt.dto.AI.AIComMatch.AIRecommendComDTO;
 import kr.soft.apt.dto.AI.AIComMatch.ComPostsDTO;
+import kr.soft.apt.dto.AI.AIComMatch.ComRecommendReqDTO;
 import kr.soft.apt.dto.AI.AIInterview.InterviewResultDTO;
 import kr.soft.apt.dto.AI.AIMatch.AIRecommendedCompanyDTO;
 import kr.soft.apt.dto.AI.AIMatch.JobRecommendReqDTO;
@@ -96,5 +98,23 @@ public class AIController {
         Long userIdx = jwtTokenProvider.getUserIdx(token);
         int companyIdx = userIdx.intValue();
         return aiService.getJobPostsByCompany(companyIdx);
+    }
+
+    @PostMapping("/AIComapnyMatch")
+    public List<AIRecommendComDTO> aiComapnyMatch(
+            @RequestBody ComRecommendReqDTO req,
+            @RequestHeader(value = "Authorization",required = false) String authorization) {
+        int companyIdx = extractCompanyIdx(authorization);
+        long jobPostsIdx = req.getJobPostsIdx();
+        int topN = req.getTopN() == 0 ? 20 : req.getTopN();
+        return aiService.recommendJobPosts(companyIdx, jobPostsIdx, topN);
+    }
+    private int extractCompanyIdx(String authorization) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return 0;
+        }
+        String token = authorization.substring(7);
+        Long userIdx = jwtTokenProvider.getUserIdx(token);
+        return userIdx == null ? 0 : userIdx.intValue();
     }
 }

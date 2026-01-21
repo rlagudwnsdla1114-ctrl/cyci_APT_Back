@@ -1,6 +1,9 @@
 package kr.soft.apt.mapper.AI;
 
+import kr.soft.apt.dto.AI.AIComMatch.AIRecommendComDTO;
 import kr.soft.apt.dto.AI.AIComMatch.ComPostsDTO;
+import kr.soft.apt.dto.AI.AIComMatch.CompanyCoverCandidateDTO;
+import kr.soft.apt.dto.AI.AIComMatch.JobPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.CoverPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.InterviewResultDTO;
 import kr.soft.apt.dto.AI.AIMatch.AIRecommendedCompanyDTO;
@@ -24,7 +27,7 @@ public interface AIMapper {
 
     int jobmatchinsert(JobseekerMatchingInsertDTO dto);
 
-    List<AIRecommendedCompanyDTO> jobmatchselect(@Param("jobseekerIdx") int  jobseekerIdx,
+    List<AIRecommendedCompanyDTO> jobmatchselect(@Param("jobseekerIdx") long  jobseekerIdx,
                                                  @Param("topN") int topN);
 
     Long selectLatestCoverPostsIdx(long jobseekerIdx);
@@ -44,4 +47,16 @@ public interface AIMapper {
 
     //기업 AI 매칭
     List<ComPostsDTO> jobPosts(@Param("companyIdx") int companyIdx);
+
+    Integer selectCompanyIdx(@Param("jobPostsIdx") long jobPostsIdx);
+
+    JobPostsDTO selectJobPostsIdx(@Param("jobPostsIdx") long jobPostsIdx);
+
+    List<CompanyCoverCandidateDTO> selectCandidates(@Param("jobPostsIdx") long jobPostsIdx);
+
+    int deleteCompanyMatching(@Param("companyIdx") int companyIdx,
+                                                    @Param("jobPostsIdx") long jobPostsIdx);
+
+    int insertCompanyMatching(AIRecommendComDTO aiRecommendComDTO);
+
 }

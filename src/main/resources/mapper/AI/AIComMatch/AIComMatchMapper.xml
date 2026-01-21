@@ -16,4 +16,83 @@
             COMPANY_IDX = #{companyIdx};
     </select>
 
+    <select id="selectCompanyIdx" resultType="int">
+        SELECT
+            COMPANY_IDX
+        FROM
+            job_posts
+        WHERE
+            JOB_POSTS_IDX = #{jobPostsIdx}
+        LIMIT 1
+    </select>
+
+    <select id="selectJobPostsIdx" resultType="JobPostsDTO">
+        SELECT
+            JOB_POSTS_IDX   AS jobPostsIdx,
+            TITLE           AS title,
+            TECH_STACK      AS techStack,
+            CAREER          AS career,
+            EDUCATION       AS education,
+            EMPLOYMENT_TYPE AS employmentType,
+            SALARY          AS salary,
+            COMPANY_IDX     AS companyIdx
+        FROM
+            job_posts
+        WHERE
+            JOB_POSTS_IDX = #{jobPostsIdx}
+        LIMIT 1
+    </select>
+
+    <select id="selectCandidates" resultType="CompanyCoverCandidateDTO">
+        SELECT
+            ca.COMPANY_APPLICANT_IDX AS companyApplicantIdx,
+            cp.JOBSEEKER_IDX AS jobseekerIdx,
+            cp.COVER_POSTS_IDX AS coverPostsIdx,
+            ju.JOBSEEKER_NAME AS jobseekerName,
+            CAST(cp.HOPE_JOB AS CHAR) AS hopeJob,
+            CAST(cp.HOPE_REGION AS CHAR) AS hopeRegion,
+            CAST(cp.EDUCATION AS CHAR) AS education,
+            CAST(cp.CAREER AS CHAR) AS career,
+            cp.KEYSKILL AS keyskill,
+            cp.APPLY_MOTIVE AS applyMotive,
+            cp.GROWTH_PROCESS AS growthProcess,
+            cp.PERSONALITY AS personality,
+            cp.JOB_EXPERIENCE AS jobExperience
+        FROM cover_posts cp
+        JOIN jobseeker_users ju
+            ON ju.JOBSEEKER_IDX = cp.JOBSEEKER_IDX
+        LEFT JOIN company_applicant ca
+            ON ca.COVER_POSTS_IDX = cp.COVER_POSTS_IDX
+        AND ca.JOB_POSTS_IDX = #{jobPostsIdx}
+        ORDER BY cp.COVER_POSTS_IDX DESC
+    </select>
+
+    <delete id="deleteCompanyMatching">
+        DELETE FROM
+            company_matching
+        WHERE
+            COMPANY_IDX = #{companyIdx}
+        AND
+            JOB_POSTS_IDX = #{jobPostsIdx}
+    </delete>
+
+    <insert id="insertCompanyMatching">
+        INSERT INTO company_matching (
+            COM_MATCH_SCORE,
+            COM_AI_REASON,
+            MATCHING_CREATEAT,
+            JOBSEEKER_IDX,
+            COMPANY_IDX,
+            JOB_POSTS_IDX
+            )
+        VALUES (
+            #{matchRate},
+            #{reason},
+            SYSDATE(),
+            #{jobseekersIdx},
+            #{companyIdx},
+            #{jobPostsIdx}
+            )
+    </insert>
+
 </mapper>
