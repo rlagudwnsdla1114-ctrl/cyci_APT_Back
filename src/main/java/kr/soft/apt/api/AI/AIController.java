@@ -44,7 +44,7 @@ public class AIController {
 
         long jobIdx = jwtTokenProvider.getUserIdx(token);
         int topN = (req == null || req.getTopN() <= 0) ? 20 : Math.min(req.getTopN(),20);
-        List<AIRecommendedCompanyDTO> lists =aiService.aiSearch(jobIdx, topN);
+        List<AIRecommendedCompanyDTO> lists = aiService.aiSearch(jobIdx, topN);
         return Map.of("lists", lists);
     }
 

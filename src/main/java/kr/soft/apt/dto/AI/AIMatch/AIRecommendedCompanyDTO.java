@@ -11,4 +11,5 @@ public class AIRecommendedCompanyDTO {
     private String salary;
     private String loc;
     private String reason;
+    private long jpIdx;
 }

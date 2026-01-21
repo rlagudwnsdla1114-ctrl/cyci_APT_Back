@@ -12,7 +12,7 @@ public class AIListService {
     @Autowired
     private AIListMapper aiListMapper;
 
-    public List<SelectJobMatchDTO> selectJobMatch(int jobseekerIdx) {
+    public List<SelectJobMatchDTO> selectJobMatch(long jobseekerIdx) {
         List<SelectJobMatchDTO> mapperResult = aiListMapper.selectJobMatch(jobseekerIdx);
         System.out.println("mapper result = " + mapperResult);
         return mapperResult;
