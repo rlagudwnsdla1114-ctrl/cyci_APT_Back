@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.soft.apt.mapper.AI.AIListMapper">
+
+    <select id="selectComMatch" resultType="AIComListDTO">
+        SELECT
+            ju.JOBSEEKER_NAME AS name,
+            cp.KEYSKILL AS keySkill,
+            cm.COM_MATCH_SCORE AS matchRate,
+            cm.COM_AI_REASON AS reason,
+            DATE_FORMAT(cm.MATCHING_CREATEAT, '%Y-%m-%d') AS matchDate,
+            cm.JOB_POSTS_IDX AS jobPostsIdx,
+            cm.JOBSEEKER_IDX AS jobseekerIdx,
+            ca.COMPANY_APPLICANT_IDX AS companyApplicantIdx
+        FROM company_matching cm
+        JOIN jobseeker_users ju ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
+        JOIN company_applicant ca ON cm.COMPANY_APPLICANT_IDX = ca.COMPANY_APPLICANT_IDX
+        JOIN cover_posts cp ON ca.COVER_POSTS_IDX = cp.COVER_POSTS_IDX
+        WHERE cm.JOB_POSTS_IDX = #{jobPostsIdx}
+        ORDER BY cm.COM_MATCH_SCORE DESC
+        LIMIT 20
+    </select>
+
+</mapper>
