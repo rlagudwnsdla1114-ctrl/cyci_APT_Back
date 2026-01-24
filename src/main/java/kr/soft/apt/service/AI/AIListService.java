@@ -1,5 +1,7 @@
 package kr.soft.apt.service.AI;
 
+import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
+import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
 import kr.soft.apt.mapper.AI.AIListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,5 +18,12 @@ public class AIListService {
         List<SelectJobMatchDTO> mapperResult = aiListMapper.selectJobMatch(jobseekerIdx);
         System.out.println("mapper result = " + mapperResult);
         return mapperResult;
+    }
+    public List<AIComListDTO> selectComMatch(long jobPostsIdx) {
+        return aiListMapper.selectComMatch(jobPostsIdx);
+    }
+
+    public List<InterviewHistoryDTO> getInterviewHistory(long jobseekerIdx) {
+        return aiListMapper.getInterviewHistory(jobseekerIdx);
     }
 }
