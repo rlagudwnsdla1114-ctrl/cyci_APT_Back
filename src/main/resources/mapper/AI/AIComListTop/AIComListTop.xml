@@ -4,28 +4,25 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.soft.apt.mapper.AI.AIListMapper">
 
-    <select id="countMyJobPosts" resultType="int" parameterType="int">
-        SELECT COUNT(*)
-        FROM job_posts
-        WHERE COMPANY_IDX = #{companyIdx}
+    <select id="selectLatestMatchedJobPostsIdx" resultType="long">
+        SELECT cm.JOB_POSTS_IDX
+        FROM company_matching cm
+        WHERE cm.COMPANY_IDX = #{companyIdx}
+        ORDER BY cm.MATCHING_CREATEAT DESC
+        LIMIT 1
     </select>
 
-    <select id="countMyApplicants" resultType="int" parameterType="int">
-        SELECT COUNT(*)
-        FROM jobseeker_applicant
-        WHERE COMPANY_IDX = #{companyIdx}
-    </select>
-
-    <select id="selectComMatchTop" parameterType="int" resultType="AIComListTopDTO">
+    <select id="selectComMatchTop3ByJobPostsIdx" resultType="AIComTopDTO">
         SELECT
         ju.JOBSEEKER_NAME AS jobseekerName,
         IFNULL(cm.COM_MATCH_SCORE, 0) AS matchScore
         FROM company_matching cm
         JOIN jobseeker_users ju
         ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-        WHERE cm.COMPANY_IDX = #{companyIdx}
-        ORDER BY cm.MATCHING_CREATEAT DESC
+        WHERE cm.JOB_POSTS_IDX = #{jobPostsIdx}
+        ORDER BY cm.COM_MATCH_SCORE DESC, cm.MATCHING_CREATEAT DESC
         LIMIT 3
     </select>
+
 
 </mapper>
