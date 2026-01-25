@@ -28,6 +28,4 @@ public interface AIListMapper {
     Long selectLatestMatchedJobPostsIdx(@Param("companyIdx") int companyIdx);
 
     List<AIComTopDTO> selectComMatchTop3ByJobPostsIdx(@Param("jobPostsIdx") long jobPostsIdx);
-
-    List<AIComListDTO> selectRecentComMatches(@Param("companyIdx") int companyIdx, @Param("limit") int limit);
 }

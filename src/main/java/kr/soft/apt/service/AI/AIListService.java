@@ -11,6 +11,7 @@ import kr.soft.apt.mapper.AI.AIListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -41,9 +42,10 @@ public class AIListService {
 
         Long latestJobPostsIdx = aiListMapper.selectLatestMatchedJobPostsIdx(companyIdx);
 
-        List<AIComTopDTO> top3 = (latestJobPostsIdx == null)
-                ? java.util.Collections.emptyList()
-                : aiListMapper.selectComMatchTop3ByJobPostsIdx(latestJobPostsIdx);
+        List<AIComTopDTO> top3 =
+                latestJobPostsIdx == null
+                        ? Collections.emptyList()
+                        : aiListMapper.selectComMatchTop3ByJobPostsIdx(latestJobPostsIdx);
 
         CompanyDashboardSummaryDTO dto = new CompanyDashboardSummaryDTO();
         dto.setPostCount(postCount);
