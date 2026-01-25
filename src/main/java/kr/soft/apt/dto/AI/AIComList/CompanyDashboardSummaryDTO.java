@@ -8,5 +8,5 @@ import java.util.List;
 public class CompanyDashboardSummaryDTO {
     private Integer postCount;
     private Integer applicantCount;
-    private List<AIComListTopDTO> top3;
+    private List<AIComTopDTO> top3;
 }

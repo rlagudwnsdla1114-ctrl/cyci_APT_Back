@@ -1,6 +1,7 @@
 package kr.soft.apt.service.AI;
 
 import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
+import kr.soft.apt.dto.AI.AIComList.AIComTopDTO;
 import kr.soft.apt.dto.AI.AIComList.CompanyDashboardSummaryDTO;
 import kr.soft.apt.dto.AI.AIComListTopDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
@@ -37,7 +38,13 @@ public class AIListService {
     public CompanyDashboardSummaryDTO getCompanyDashboardSummary(int companyIdx) {
         int postCount = aiListMapper.countMyJobPosts(companyIdx);
         int applicantCount = aiListMapper.countMyApplicants(companyIdx);
-        List<AIComListTopDTO> top3 = aiListMapper.selectComMatchTop(companyIdx);
+
+        Long latestJobPostsIdx = aiListMapper.selectLatestMatchedJobPostsIdx(companyIdx);
+
+        List<AIComTopDTO> top3 = (latestJobPostsIdx == null)
+                ? java.util.Collections.emptyList()
+                : aiListMapper.selectComMatchTop3ByJobPostsIdx(latestJobPostsIdx);
+
         CompanyDashboardSummaryDTO dto = new CompanyDashboardSummaryDTO();
         dto.setPostCount(postCount);
         dto.setApplicantCount(applicantCount);
