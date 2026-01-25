@@ -12,32 +12,36 @@
 
     <select id="countMyApplicants" resultType="int">
         SELECT COUNT(*)
-        FROM company_applicant ca
-        JOIN job_posts jp ON jp.JOB_POSTS_IDX = ca.JOB_POSTS_IDX
+        FROM jobseeker_applicant a
+        JOIN job_posts jp ON jp.JOB_POSTS_IDX = a.JOB_POSTS_IDX
         WHERE jp.COMPANY_IDX = #{companyIdx}
     </select>
 
-    <select id="selectLatestMatchedJobPostsIdx" resultType="long">
-        SELECT cm.JOB_POSTS_IDX
+    <select id="selectLatestMatchingTop3" resultType="AIComTopDTO">
+        SELECT
+            ju.JOBSEEKER_NAME AS jobseekerName,
+            cm.COM_MATCH_SCORE AS matchScore
         FROM company_matching cm
-        WHERE cm.COMPANY_IDX = #{companyIdx}
-        ORDER BY cm.MATCHING_CREATEAT DESC,
-        cm.COM_MATCHING_IDX DESC
-        LIMIT 1
+        JOIN job_posts jp ON jp.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
+        JOIN jobseeker_users ju ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
+        WHERE jp.COMPANY_IDX = #{companyIdx}
+        ORDER BY cm.MATCHING_CREATEAT DESC, cm.COM_MATCHING_IDX DESC
+        LIMIT 3
     </select>
 
-    <select id="selectComMatchTop3ByJobPostsIdx"
-            resultType="AIComTopDTO">
+    <select id="selectRecommendedTalentsTop3" resultType="CompanyTalentDTO">
         SELECT
-        ju.JOBSEEKER_NAME AS jobseekerName,
-        cm.COM_MATCH_SCORE AS matchScore
+            ju.JOBSEEKER_IDX AS jobseekerIdx,
+            ju.JOBSEEKER_NAME AS jobseekerName,
+            JSON_UNQUOTE(JSON_EXTRACT(cp.HOPE_JOB, '$[0]')) AS hopeJob,
+            cm.COM_MATCH_SCORE AS matchScore,
+            cp.KEYSKILL AS tags
         FROM company_matching cm
-        JOIN jobseeker_users ju
-        ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-        WHERE cm.JOB_POSTS_IDX = #{jobPostsIdx}
-        ORDER BY cm.COM_MATCH_SCORE DESC,
-        cm.MATCHING_CREATEAT DESC,
-        cm.COM_MATCHING_IDX DESC
+        JOIN job_posts jp ON jp.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
+        JOIN jobseeker_users ju ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
+        LEFT JOIN cover_posts cp ON cp.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
+        WHERE jp.COMPANY_IDX = #{companyIdx}
+        ORDER BY cm.MATCHING_CREATEAT DESC, cm.COM_MATCHING_IDX DESC
         LIMIT 3
     </select>
 

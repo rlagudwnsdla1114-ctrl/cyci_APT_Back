@@ -6,7 +6,9 @@ import java.util.List;
 
 @Data
 public class CompanyDashboardSummaryDTO {
-    private Integer postCount;
-    private Integer applicantCount;
+    private int postCount;
+    private int applicantCount;
     private List<AIComTopDTO> top3;
+
+    private List<CompanyTalentDTO> recommendedTalents;
 }

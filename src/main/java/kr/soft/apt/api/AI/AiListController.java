@@ -46,8 +46,9 @@ public class AiListController {
     }
 
     @GetMapping("/companySummary")
-    public CompanyDashboardSummaryDTO companyDashboardSummary(HttpServletRequest request) {
-        int companyIdx = ((Number) request.getAttribute("userIdx")).intValue();
+    public CompanyDashboardSummaryDTO companySummary(HttpServletRequest request) {
+        Object userIdxObj = request.getAttribute("userIdx");
+        int companyIdx = ((Number) userIdxObj).intValue();
         return aiListService.getCompanyDashboardSummary(companyIdx);
     }
 }
