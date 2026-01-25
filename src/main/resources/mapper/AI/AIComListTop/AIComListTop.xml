@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.soft.apt.mapper.AI.AIListMapper">
+
+    <select id="countMyJobPosts" resultType="int" parameterType="int">
+        SELECT COUNT(*)
+        FROM job_posts
+        WHERE COMPANY_IDX = #{companyIdx}
+    </select>
+
+    <select id="countMyApplicants" resultType="int" parameterType="int">
+        SELECT COUNT(*)
+        FROM jobseeker_applicant
+        WHERE COMPANY_IDX = #{companyIdx}
+    </select>
+
+    <select id="selectComMatchTop" parameterType="int" resultType="AIComListTopDTO">
+        SELECT
+        ju.JOBSEEKER_NAME AS jobseekerName,
+        IFNULL(cm.COM_MATCH_SCORE, 0) AS matchScore
+        FROM company_matching cm
+        JOIN jobseeker_users ju
+        ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
+        WHERE cm.COMPANY_IDX = #{companyIdx}
+        ORDER BY cm.MATCHING_CREATEAT DESC
+        LIMIT 3
+    </select>
+
+</mapper>

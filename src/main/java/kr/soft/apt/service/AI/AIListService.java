@@ -1,6 +1,8 @@
 package kr.soft.apt.service.AI;
 
 import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
+import kr.soft.apt.dto.AI.AIComList.CompanyDashboardSummaryDTO;
+import kr.soft.apt.dto.AI.AIComListTopDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
 import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
@@ -30,5 +32,16 @@ public class AIListService {
 
     public List<AIListTopDTO> selectJobMatchTop(long jobseekerIdx) {
         return aiListMapper.selectJobMatchTop(jobseekerIdx);
+    }
+
+    public CompanyDashboardSummaryDTO getCompanyDashboardSummary(int companyIdx) {
+        int postCount = aiListMapper.countMyJobPosts(companyIdx);
+        int applicantCount = aiListMapper.countMyApplicants(companyIdx);
+        List<AIComListTopDTO> top3 = aiListMapper.selectComMatchTop(companyIdx);
+        CompanyDashboardSummaryDTO dto = new CompanyDashboardSummaryDTO();
+        dto.setPostCount(postCount);
+        dto.setApplicantCount(applicantCount);
+        dto.setTop3(top3);
+        return dto;
     }
 }
