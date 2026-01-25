@@ -37,20 +37,13 @@ public class AIListService {
     }
 
     public CompanyDashboardSummaryDTO getCompanyDashboardSummary(int companyIdx) {
-        int postCount = aiListMapper.countMyJobPosts(companyIdx);
-        int applicantCount = aiListMapper.countMyApplicants(companyIdx);
+        CompanyDashboardSummaryDTO companyDashboardSummaryDTO = new CompanyDashboardSummaryDTO();
 
-        Long latestJobPostsIdx = aiListMapper.selectLatestMatchedJobPostsIdx(companyIdx);
+        companyDashboardSummaryDTO.setPostCount(aiListMapper.countMyJobPosts(companyIdx));
+        companyDashboardSummaryDTO.setApplicantCount(aiListMapper.countMyApplicants(companyIdx));
+        companyDashboardSummaryDTO.setTop3(aiListMapper.selectLatestMatchingTop3(companyIdx));
+        companyDashboardSummaryDTO.setRecommendedTalents(aiListMapper.selectRecommendedTalentsTop3(companyIdx));
 
-        List<AIComTopDTO> top3 =
-                latestJobPostsIdx == null
-                        ? Collections.emptyList()
-                        : aiListMapper.selectComMatchTop3ByJobPostsIdx(latestJobPostsIdx);
-
-        CompanyDashboardSummaryDTO dto = new CompanyDashboardSummaryDTO();
-        dto.setPostCount(postCount);
-        dto.setApplicantCount(applicantCount);
-        dto.setTop3(top3);
-        return dto;
+        return companyDashboardSummaryDTO;
     }
 }

@@ -2,6 +2,7 @@ package kr.soft.apt.mapper.AI;
 
 import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
 import kr.soft.apt.dto.AI.AIComList.AIComTopDTO;
+import kr.soft.apt.dto.AI.AIComList.CompanyTalentDTO;
 import kr.soft.apt.dto.AI.AIComListTopDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
 import kr.soft.apt.dto.AI.AIListTopDTO;
@@ -25,7 +26,8 @@ public interface AIListMapper {
 
     int countMyApplicants(@Param("companyIdx") int companyIdx);
 
-    Long selectLatestMatchedJobPostsIdx(@Param("companyIdx") int companyIdx);
+    List<AIComTopDTO> selectLatestMatchingTop3(@Param("companyIdx") int companyIdx);
 
-    List<AIComTopDTO> selectComMatchTop3ByJobPostsIdx(@Param("jobPostsIdx") long jobPostsIdx);
+    List<CompanyTalentDTO> selectRecommendedTalentsTop3(@Param("companyIdx") int companyIdx);
+
 }
