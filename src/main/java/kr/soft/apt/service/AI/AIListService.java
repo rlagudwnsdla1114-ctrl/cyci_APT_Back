@@ -2,6 +2,7 @@ package kr.soft.apt.service.AI;
 
 import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
+import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
 import kr.soft.apt.mapper.AI.AIListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,9 @@ public class AIListService {
 
     public List<InterviewHistoryDTO> getInterviewHistory(long jobseekerIdx) {
         return aiListMapper.getInterviewHistory(jobseekerIdx);
+    }
+
+    public List<AIListTopDTO> selectJobMatchTop(long jobseekerIdx) {
+        return aiListMapper.selectJobMatchTop(jobseekerIdx);
     }
 }

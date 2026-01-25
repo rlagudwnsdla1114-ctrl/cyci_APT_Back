@@ -2,6 +2,7 @@ package kr.soft.apt.mapper.AI;
 
 import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
+import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -15,4 +16,6 @@ public interface AIListMapper {
     List<AIComListDTO> selectComMatch(@Param("jobPostsIdx") long jobPostsIdx);
 
     List<InterviewHistoryDTO> getInterviewHistory(@Param("jobseekerIdx") long jobseekerIdx);
+
+    List<AIListTopDTO> selectJobMatchTop(long jobseekerIdx);
 }
