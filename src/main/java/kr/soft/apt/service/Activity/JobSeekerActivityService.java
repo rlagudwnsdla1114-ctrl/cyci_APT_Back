@@ -4,6 +4,7 @@ import kr.soft.apt.dto.Activity.AppliedItemDTO;
 import kr.soft.apt.dto.Activity.ScrappedItemDTO;
 import kr.soft.apt.mapper.Activity.JobSeekerActivityMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class JobSeekerActivityService {
 
@@ -59,5 +61,13 @@ public class JobSeekerActivityService {
 
     public List<ScrappedItemDTO> listScrapped(Long jobSeekerIdx) {
         return mapper.listScrapped(jobSeekerIdx);
+    }
+
+    public void deleteApplied(Long jobSeekerIdx, Long jobPostsIdx) {
+        int rows = mapper.deleteApplied(jobSeekerIdx, jobPostsIdx);
+        log.info("deleteApplied rows={}, jobSeekerIdx={}, jobPostsIdx={}", rows, jobSeekerIdx, jobPostsIdx);
+
+
+        if (rows == 0) throw new RuntimeException("검토중 상태만 취소할 수 있습니다.");
     }
 }

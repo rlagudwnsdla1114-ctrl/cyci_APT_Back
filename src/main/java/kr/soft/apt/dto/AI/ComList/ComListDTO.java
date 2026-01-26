@@ -1,9 +1,9 @@
-package kr.soft.apt.dto.AI.AIComList;
+package kr.soft.apt.dto.AI.ComList;
 
 import lombok.Data;
 
 @Data
-public class AIComListDTO {
+public class ComListDTO {
     private String jobseekerName;
     private String keySkill;
     private int comMatchScore;

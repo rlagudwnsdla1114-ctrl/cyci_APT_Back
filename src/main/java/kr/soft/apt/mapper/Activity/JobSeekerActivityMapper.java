@@ -32,4 +32,7 @@ public interface JobSeekerActivityMapper {
     List<AppliedItemDTO> listApplied(@Param("jobSeekerIdx") Long jobSeekerIdx);
 
     List<ScrappedItemDTO> listScrapped(@Param("jobSeekerIdx") Long jobSeekerIdx);
+
+    int deleteApplied(@Param("jobSeekerIdx") Long jobSeekerIdx,
+                      @Param("jobPostsIdx") Long jobPostsIdx);
 }
