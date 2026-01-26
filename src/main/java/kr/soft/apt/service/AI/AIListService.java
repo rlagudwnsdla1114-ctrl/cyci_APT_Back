@@ -1,10 +1,17 @@
 package kr.soft.apt.service.AI;
 
+import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
+import kr.soft.apt.dto.AI.AIComList.AIComTopDTO;
+import kr.soft.apt.dto.AI.AIComList.CompanyDashboardSummaryDTO;
+import kr.soft.apt.dto.AI.AIComListTopDTO;
+import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
+import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
 import kr.soft.apt.mapper.AI.AIListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -16,5 +23,27 @@ public class AIListService {
         List<SelectJobMatchDTO> mapperResult = aiListMapper.selectJobMatch(jobseekerIdx);
         System.out.println("mapper result = " + mapperResult);
         return mapperResult;
+    }
+    public List<AIComListDTO> selectComMatch(long jobPostsIdx) {
+        return aiListMapper.selectComMatch(jobPostsIdx);
+    }
+
+    public List<InterviewHistoryDTO> getInterviewHistory(long jobseekerIdx) {
+        return aiListMapper.getInterviewHistory(jobseekerIdx);
+    }
+
+    public List<AIListTopDTO> selectJobMatchTop(long jobseekerIdx) {
+        return aiListMapper.selectJobMatchTop(jobseekerIdx);
+    }
+
+    public CompanyDashboardSummaryDTO getCompanyDashboardSummary(int companyIdx) {
+        CompanyDashboardSummaryDTO companyDashboardSummaryDTO = new CompanyDashboardSummaryDTO();
+
+        companyDashboardSummaryDTO.setPostCount(aiListMapper.countMyJobPosts(companyIdx));
+        companyDashboardSummaryDTO.setApplicantCount(aiListMapper.countMyApplicants(companyIdx));
+        companyDashboardSummaryDTO.setTop3(aiListMapper.selectLatestMatchingTop3(companyIdx));
+        companyDashboardSummaryDTO.setRecommendedTalents(aiListMapper.selectRecommendedTalentsTop3(companyIdx));
+
+        return companyDashboardSummaryDTO;
     }
 }

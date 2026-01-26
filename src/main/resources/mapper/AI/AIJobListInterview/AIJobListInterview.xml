@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.soft.apt.mapper.AI.AIListMapper">
+
+    <select id="getInterviewHistory" resultType="InterviewHistoryDTO">
+        SELECT
+        ir.IDINTERVIEW_IDX AS interviewId,
+        JSON_UNQUOTE(JSON_EXTRACT(cp.HOPE_JOB, '$[0]')) AS interviewTitle,
+        ir.INTERVIEW_SCORE AS totalScore,
+        ir.INTERVIEW_REASON AS aiFeedback
+        FROM interview_result ir
+        JOIN cover_posts cp ON ir.COVER_POSTS_IDX = cp.COVER_POSTS_IDX
+        WHERE cp.JOBSEEKER_IDX = #{jobseekerIdx}
+        ORDER BY ir.IDINTERVIEW_IDX DESC
+    </select>
+
+</mapper>

@@ -1,15 +1,15 @@
 package kr.soft.apt.api.AI;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.soft.apt.config.jwt.JwtTokenProvider;
+import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
+import kr.soft.apt.dto.AI.AIComList.CompanyDashboardSummaryDTO;
+import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
+import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
 import kr.soft.apt.service.AI.AIListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +26,29 @@ public class AiListController {
     public List<SelectJobMatchDTO> selectJobMatch(HttpServletRequest request) {
         long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
         return aiListService.selectJobMatch(jobseekerIdx);
+    }
+
+    @GetMapping("/selectComMatch")
+    public List<AIComListDTO> selectComMatch(@RequestParam("jobPostsIdx") long jobPostsIdx) {
+        return aiListService.selectComMatch(jobPostsIdx);
+    }
+
+    @GetMapping("/interviewHistory")
+    public List<InterviewHistoryDTO> getInterviewHistory(HttpServletRequest request) {
+        long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
+        return aiListService.getInterviewHistory(jobseekerIdx);
+    }
+
+    @GetMapping("/selectJobMatchTop")
+    public List<AIListTopDTO> selectJobMatchTop3(HttpServletRequest request) {
+        long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
+        return aiListService.selectJobMatchTop(jobseekerIdx);
+    }
+
+    @GetMapping("/companySummary")
+    public CompanyDashboardSummaryDTO companySummary(HttpServletRequest request) {
+        Object userIdxObj = request.getAttribute("userIdx");
+        int companyIdx = ((Number) userIdxObj).intValue();
+        return aiListService.getCompanyDashboardSummary(companyIdx);
     }
 }
