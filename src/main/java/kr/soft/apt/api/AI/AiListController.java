@@ -2,7 +2,7 @@ package kr.soft.apt.api.AI;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.soft.apt.dto.AI.AIComList.AIComListDTO;
-import kr.soft.apt.dto.AI.AIComList.CompanyDashboardSummaryDTO;
+import kr.soft.apt.dto.AI.AIComList.CompanySummaryDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
 import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
@@ -46,7 +46,7 @@ public class AiListController {
     }
 
     @GetMapping("/companySummary")
-    public CompanyDashboardSummaryDTO companySummary(HttpServletRequest request) {
+    public CompanySummaryDTO companySummary(HttpServletRequest request) {
         Object userIdxObj = request.getAttribute("userIdx");
         int companyIdx = ((Number) userIdxObj).intValue();
         return aiListService.getCompanyDashboardSummary(companyIdx);
