@@ -55,7 +55,7 @@
     </update>
 
     <!-- 지원현황: SCRAP 제외 -->
-    <select id="listApplied" resultType="kr.soft.apt.dto.Activity.AppliedItemDTO">
+    <select id="listApplied" resultType="AppliedItemDTO">
         SELECT
         a.JOB_POSTS_IDX AS jobPostsIdx,
         cu.COMPANY_NAME AS companyName,
@@ -71,7 +71,7 @@
     </select>
 
     <!-- 관심공고: SCRAP만 -->
-    <select id="listScrapped" resultType="kr.soft.apt.dto.Activity.ScrappedItemDTO">
+    <select id="listScrapped" resultType="ScrappedItemDTO">
         SELECT
         a.JOB_POSTS_IDX    AS jobPostsIdx,
         cu.COMPANY_NAME    AS companyName,
@@ -86,5 +86,12 @@
         AND a.STATUS = 'SCRAP'
         ORDER BY a.APPLIED_AT DESC
     </select>
+
+    <delete id="deleteApplied">
+        DELETE FROM jobseeker_applicant
+        WHERE JOBSEEKER_IDX = #{jobSeekerIdx}
+        AND JOB_POSTS_IDX = #{jobPostsIdx}
+        AND STATUS = '검토중'
+    </delete>
 
 </mapper>

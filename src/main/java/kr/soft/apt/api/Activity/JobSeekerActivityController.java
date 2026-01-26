@@ -62,4 +62,13 @@ public class JobSeekerActivityController {
     public ResponseEntity<ApiResponse<List<ScrappedItemDTO>>> scrapped(HttpServletRequest request) {
         return ApiResponse.success(service.listScrapped(jobSeekerIdx(request)));
     }
+
+    @DeleteMapping("/applied/{jobPostsIdx}")
+    public ResponseEntity<ApiResponse<String>> deleteApplied(
+            @PathVariable Long jobPostsIdx,
+            HttpServletRequest request
+    ) {
+        service.deleteApplied(jobSeekerIdx(request), jobPostsIdx);
+        return ApiResponse.success("ok");
+    }
 }
