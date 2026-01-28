@@ -27,4 +27,11 @@
         LIMIT 3
     </select>
 
+    <select id="selectDashboardCounts" resultType="JobSeekerDashboardCountDTO">
+        SELECT
+        COUNT(*) AS applyCount,
+        COALESCE(SUM(CASE WHEN STATUS = #{interviewStatus} THEN 1 ELSE 0 END), 0) AS interviewWaitCount
+        FROM jobseeker_applicant
+        WHERE JOBSEEKER_IDX = #{jobseekerIdx}
+    </select>
 </mapper>

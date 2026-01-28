@@ -7,6 +7,7 @@ import kr.soft.apt.dto.AI.AIComListTopDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
 import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
+import kr.soft.apt.dto.AI.JobSeekerDashboardCountDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,4 +31,6 @@ public interface AIListMapper {
 
     List<CompanyTalentDTO> selectRecommendedTalentsTop3(@Param("companyIdx") int companyIdx);
 
+    JobSeekerDashboardCountDTO selectDashboardCounts(@Param("jobseekerIdx") int jobseekerIdx,
+                                                     @Param("interviewStatus") String interviewStatus);
 }

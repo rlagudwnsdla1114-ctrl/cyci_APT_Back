@@ -6,12 +6,14 @@ import kr.soft.apt.dto.AI.AIComList.CompanySummaryDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
 import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
+import kr.soft.apt.dto.AI.JobSeekerDashboardCountDTO;
 import kr.soft.apt.service.AI.AIListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -50,5 +52,12 @@ public class AiListController {
         Object userIdxObj = request.getAttribute("userIdx");
         int companyIdx = ((Number) userIdxObj).intValue();
         return aiListService.getCompanyDashboardSummary(companyIdx);
+    }
+
+    @GetMapping("/dashboard-counts")
+    public Map<String, Object> dashboardCounts(HttpServletRequest request) {
+        long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
+        JobSeekerDashboardCountDTO dto = aiListService.getCounts((int) jobseekerIdx);
+        return Map.of("ok", true, "data", dto);
     }
 }
