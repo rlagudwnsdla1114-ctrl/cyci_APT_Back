@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.soft.apt.mapper.UserInfo.UserInfoMapper">
+
+    <select id="CompanyInfo" parameterType="long" resultType="CompanyInfoDTO">
+        SELECT
+            COMPANY_NAME AS companyName,
+            COMPANY_REGION AS companyRegion
+        FROM company_users
+        WHERE COMPANY_IDX = #{companyIdx}
+            LIMIT 1
+    </select>
+
+
+    <select id="JobseekerInfo" parameterType="long" resultType="JobseekerInfoDTO">
+        SELECT
+            JOBSEEKER_NAME AS jobseekerName,
+            JOBSEEKER_BIRTH AS jobseekerBirth
+        FROM jobseeker_users
+        WHERE JOBSEEKER_IDX = #{jobseekerIdx}
+            LIMIT 1
+    </select>
+
+
+</mapper>
