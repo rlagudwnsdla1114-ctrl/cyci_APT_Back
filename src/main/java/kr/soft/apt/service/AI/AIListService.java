@@ -5,6 +5,7 @@ import kr.soft.apt.dto.AI.AIComList.CompanySummaryDTO;
 import kr.soft.apt.dto.AI.AIJobiInterview.InterviewHistoryDTO;
 import kr.soft.apt.dto.AI.AIListTopDTO;
 import kr.soft.apt.dto.AI.JobMatchSelect.SelectJobMatchDTO;
+import kr.soft.apt.dto.AI.JobSeekerDashboardCountDTO;
 import kr.soft.apt.mapper.AI.AIListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,5 +43,10 @@ public class AIListService {
         companyDashboardSummaryDTO.setRecommendedTalents(aiListMapper.selectRecommendedTalentsTop3(companyIdx));
 
         return companyDashboardSummaryDTO;
+    }
+
+    public JobSeekerDashboardCountDTO getCounts(int jobseekerIdx) {
+        String interviewStatus = "면접대기";
+        return aiListMapper.selectDashboardCounts(jobseekerIdx, interviewStatus);
     }
 }
