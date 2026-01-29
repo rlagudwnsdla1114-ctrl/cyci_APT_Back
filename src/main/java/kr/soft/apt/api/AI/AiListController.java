@@ -54,7 +54,7 @@ public class AiListController {
         return aiListService.getCompanyDashboardSummary(companyIdx);
     }
 
-    @GetMapping("/dashboard-counts")
+    @GetMapping("/dashboardCounts")
     public Map<String, Object> dashboardCounts(HttpServletRequest request) {
         long jobseekerIdx = ((Number) request.getAttribute("userIdx")).longValue();
         JobSeekerDashboardCountDTO dto = aiListService.getCounts((int) jobseekerIdx);
