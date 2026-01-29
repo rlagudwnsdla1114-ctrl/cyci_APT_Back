@@ -46,7 +46,7 @@ public class AIListService {
     }
 
     public JobSeekerDashboardCountDTO getCounts(int jobseekerIdx) {
-        String interviewStatus = "면접대기";
+        String interviewStatus = "검토중";
         return aiListMapper.selectDashboardCounts(jobseekerIdx, interviewStatus);
     }
 }
