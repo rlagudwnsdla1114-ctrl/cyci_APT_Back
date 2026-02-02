@@ -10,6 +10,7 @@ import kr.soft.apt.dto.AI.JobSeekerDashboardCountDTO;
 import kr.soft.apt.service.AI.AIListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,10 +31,63 @@ public class AiListController {
         return aiListService.selectJobMatch(jobseekerIdx);
     }
 
-    @GetMapping("/selectComMatch")
-    public List<AIComListDTO> selectComMatch(@RequestParam("jobPostsIdx") long jobPostsIdx) {
-        return aiListService.selectComMatch(jobPostsIdx);
+
+
+    @GetMapping("/talentDetail")
+    public ResponseEntity<?> talentDetail(@RequestParam("comMatchingIdx") long comMatchingIdx) {
+        System.out.println("[CONTROLLER] talentDetail HIT comMatchingIdx=" + comMatchingIdx);
+        log.info("[CONTROLLER] talentDetail HIT comMatchingIdx={}", comMatchingIdx);
+
+        try {
+            Map<String, Object> data = aiListService.getTalentDetail(comMatchingIdx);
+
+            System.out.println("[CONTROLLER] talentDetail RESULT data=" + data);
+            log.info("[CONTROLLER] talentDetail RESULT data={}", data);
+
+            if (data == null || data.isEmpty() || data.get("jobseekerIdx") == null) {
+                return ResponseEntity.status(404).body(Map.of("ok", false, "error", "NOT_FOUND"));
+            }
+            return ResponseEntity.ok(Map.of("ok", true, "data", data));
+
+        } catch (Exception e) {
+            System.out.println("[CONTROLLER] talentDetail ERROR comMatchingIdx=" + comMatchingIdx);
+            e.printStackTrace();
+            log.error("[CONTROLLER] talentDetail ERROR comMatchingIdx={}", comMatchingIdx, e);
+
+            return ResponseEntity.status(500).body(Map.of("ok", false, "error", "SERVER_ERROR"));
+        }
     }
+
+    @GetMapping("/talentDetailByJobseeker")
+    public ResponseEntity<?> talentDetailByJobseeker(
+            @RequestParam("jobseekerIdx") int jobseekerIdx,
+            @RequestParam(value = "jobPostsIdx", required = false) Long jobPostsIdx
+    ) {
+        System.out.println("[CONTROLLER] talentDetailByJobseeker HIT jobseekerIdx=" + jobseekerIdx + ", jobPostsIdx=" + jobPostsIdx);
+        log.info("[CONTROLLER] talentDetailByJobseeker HIT jobseekerIdx={}, jobPostsIdx={}", jobseekerIdx, jobPostsIdx);
+
+        try {
+            Map<String, Object> data = aiListService.getTalentDetailByJobseeker(jobseekerIdx, jobPostsIdx);
+
+            System.out.println("[CONTROLLER] talentDetailByJobseeker RESULT data=" + data);
+            log.info("[CONTROLLER] talentDetailByJobseeker RESULT data={}", data);
+
+            if (data == null || data.isEmpty() || data.get("jobseekerIdx") == null) {
+                return ResponseEntity.status(404).body(Map.of("ok", false, "error", "NOT_FOUND"));
+            }
+            return ResponseEntity.ok(Map.of("ok", true, "data", data));
+
+        } catch (Exception e) {
+            System.out.println("[CONTROLLER] talentDetailByJobseeker ERROR jobseekerIdx=" + jobseekerIdx);
+            e.printStackTrace();
+            log.error("[CONTROLLER] talentDetailByJobseeker ERROR jobseekerIdx={}", jobseekerIdx, e);
+
+            return ResponseEntity.status(500).body(Map.of("ok", false, "error", "SERVER_ERROR"));
+        }
+    }
+
+
+
 
     @GetMapping("/interviewHistory")
     public List<InterviewHistoryDTO> getInterviewHistory(HttpServletRequest request) {
