@@ -9,4 +9,7 @@ public class CompanyTalentDTO {
     private String hopeJob;
     private int matchScore;
     private String tags;
+
+    private Long jobseekerApplicantIdx;
+    private Long jobPostsIdx;
 }

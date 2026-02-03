@@ -38,19 +38,33 @@
 
     <select id="selectRecommendedTalentsTop3" resultType="CompanyTalentDTO">
         SELECT
-            ju.JOBSEEKER_IDX AS jobseekerIdx,
-            ju.JOBSEEKER_NAME AS jobseekerName,
-            JSON_UNQUOTE(JSON_EXTRACT(cp.HOPE_JOB, '$[0]')) AS hopeJob,
-            cm.COM_MATCH_SCORE AS matchScore,
-            cp.KEYSKILL AS tags
+        ju.JOBSEEKER_IDX AS jobseekerIdx,
+        ju.JOBSEEKER_NAME AS jobseekerName,
+        JSON_UNQUOTE(JSON_EXTRACT(cp.HOPE_JOB, '$[0]')) AS hopeJob,
+        cm.COM_MATCH_SCORE AS matchScore,
+        cp.KEYSKILL AS tags,
+        ja.JOBSEEKER_APPLICANT_IDX AS jobseekerApplicantIdx,
+        cm.JOB_POSTS_IDX AS jobPostsIdx
         FROM company_matching cm
-        JOIN job_posts jp ON jp.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
-        JOIN jobseeker_users ju ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-        LEFT JOIN cover_posts cp ON cp.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
-        WHERE jp.COMPANY_IDX = #{companyIdx}
-        ORDER BY cm.COM_MATCH_SCORE DESC, cm.MATCHING_CREATEAT DESC
-        LIMIT 3
+        JOIN job_posts jp
+        ON jp.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
+        JOIN jobseeker_users ju
+        ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
+        LEFT JOIN cover_posts cp
+        ON cp.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
 
+        JOIN jobseeker_applicant ja
+        ON ja.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
+        AND ja.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
+
+        WHERE jp.COMPANY_IDX = #{companyIdx}
+
+        ORDER BY
+        cm.COM_MATCH_SCORE DESC,
+        cm.MATCHING_CREATEAT DESC,
+        cm.COM_MATCHING_IDX DESC
+        LIMIT 3
     </select>
+
 
 </mapper>
