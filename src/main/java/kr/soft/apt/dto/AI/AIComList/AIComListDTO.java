@@ -12,5 +12,3 @@ public class AIComListDTO {
     private String comAiReason;
 
 }
-
-

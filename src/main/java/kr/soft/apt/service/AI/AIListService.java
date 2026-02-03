@@ -26,9 +26,28 @@ public class AIListService {
 
 
     public List<AIComListDTO> selectComMatch(long jobPostsIdx) {
+
         List<AIComListDTO> resultList = aiListMapper.selectComMatch(jobPostsIdx);
+
+        System.out.println("===== selectComMatch 결과 확인 =====");
+
+        if (resultList == null) {
+            System.out.println("resultList 자체가 null");
+        } else if (resultList.isEmpty()) {
+            System.out.println("resultList 비어 있음");
+        } else {
+            AIComListDTO dto = resultList.get(0);
+            System.out.println("jobSeekerIdx = " + dto.getJobSeekerIdx());
+            System.out.println("name         = " + dto.getName());
+            System.out.println("matchRate    = " + dto.getMatchRate());
+            System.out.println("matchDate    = " + dto.getMatchDate());
+            System.out.println("keySkill     = " + dto.getKeySkill());
+            System.out.println("comAiReason  = " + dto.getComAiReason());
+        }
+
         return resultList;
     }
+
 
 
 

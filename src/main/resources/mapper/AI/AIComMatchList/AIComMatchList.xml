@@ -4,26 +4,20 @@
 
     <select id="selectComMatch" resultType="AIComListDTO">
         SELECT
-        ju.JOBSEEKER_NAME AS jobSeekerName,
+        ju.JOBSEEKER_IDX AS jobSeekerIdx,
+        ju.JOBSEEKER_NAME AS name,
         cp.KEYSKILL AS keySkill,
-        cm.COM_MATCH_SCORE AS comMatchScore,
+        cm.COM_MATCH_SCORE AS matchRate,
         cm.COM_AI_REASON AS comAiReason,
-        DATE_FORMAT(cm.MATCHING_CREATEAT, '%Y-%m-%d') AS matchingCreatedAt,
-        cm.JOB_POSTS_IDX AS jobPostsIdx,
-        cm.JOBSEEKER_IDX AS jobSeekerIdx
-        FROM
-        company_matching cm
-        LEFT JOIN
-        jobseeker_users ju ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-        LEFT JOIN
-        job_posts jp ON jp.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
-        LEFT JOIN
-        cover_posts cp ON cp.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
-        WHERE
-        cm.JOB_POSTS_IDX = #{jobPostsIdx}
-        ORDER BY
-        cm.COM_MATCH_SCORE DESC
-        LIMIT 20;
+        DATE_FORMAT(cm.MATCHING_CREATEAT, '%Y-%m-%d') AS matchDate,
+        cm.JOB_POSTS_IDX AS jobPostsIdx
+        FROM company_matching cm
+        LEFT JOIN jobseeker_users ju ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
+        LEFT JOIN job_posts jp ON jp.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
+        LEFT JOIN cover_posts cp ON cp.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
+        WHERE cm.JOB_POSTS_IDX = #{jobPostsIdx}
+        ORDER BY cm.COM_MATCH_SCORE DESC
+        LIMIT 20
     </select>
 
 </mapper>
