@@ -95,4 +95,52 @@
             )
     </insert>
 
+    <select id="selectLatestResumeByJobseeker" resultType="JobseekerResumeDetailDTO">
+        SELECT
+        ju.JOBSEEKER_IDX       AS jobseekerIdx,
+        ju.JOBSEEKER_NAME      AS jobseekerName,
+        ju.JOBSEEKER_EMAIL     AS jobseekerEmail,
+        ju.JOBSEEKER_PHONE     AS jobseekerPhone,
+        ju.JOBSEEKER_BIRTH     AS jobseekerBirth,
+
+        cp.COVER_POSTS_IDX     AS coverPostsIdx,
+        CAST(cp.HOPE_JOB AS CHAR)    AS hopeJob,
+        CAST(cp.HOPE_REGION AS CHAR) AS hopeRegion,
+        CAST(cp.EDUCATION AS CHAR)   AS education,
+        CAST(cp.CAREER AS CHAR)      AS career,
+        cp.KEYSKILL            AS keyskill,
+        cp.APPLY_MOTIVE        AS applyMotive,
+        cp.GROWTH_PROCESS      AS growthProcess,
+        cp.PERSONALITY         AS personality,
+        cp.JOB_EXPERIENCE      AS jobExperience,
+        cp.IMAGE_URL           AS imageUrl,
+
+        -- 🔥 AI 매칭 정보
+        cm.JOB_POSTS_IDX       AS jobPostsIdx,
+        jp.TITLE               AS jobTitle,
+        cm.COM_MATCH_SCORE     AS comMatchScore,
+        cm.COM_AI_REASON       AS comAiReason,
+        ca.STATUS              AS status
+
+        FROM cover_posts cp
+        JOIN jobseeker_users ju ON ju.JOBSEEKER_IDX = cp.JOBSEEKER_IDX
+
+        LEFT JOIN company_matching cm
+        ON cm.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
+
+        LEFT JOIN job_posts jp
+        ON jp.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
+
+        LEFT JOIN company_applicant ca
+        ON ca.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
+
+        WHERE cp.JOBSEEKER_IDX = #{jobseekerIdx}
+        ORDER BY cp.COVER_POSTS_IDX DESC
+        LIMIT 1
+    </select>
+
+
+
+
+
 </mapper>

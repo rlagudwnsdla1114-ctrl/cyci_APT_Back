@@ -1,9 +1,6 @@
 package kr.soft.apt.mapper.AI;
 
-import kr.soft.apt.dto.AI.AIComMatch.AIRecommendComDTO;
-import kr.soft.apt.dto.AI.AIComMatch.ComPostsDTO;
-import kr.soft.apt.dto.AI.AIComMatch.CompanyCoverCandidateDTO;
-import kr.soft.apt.dto.AI.AIComMatch.JobPostsDTO;
+import kr.soft.apt.dto.AI.AIComMatch.*;
 import kr.soft.apt.dto.AI.AIInterview.CoverPostsDTO;
 import kr.soft.apt.dto.AI.AIInterview.InterviewResultDTO;
 import kr.soft.apt.dto.AI.AIMatch.AIRecommendedCompanyDTO;
@@ -58,5 +55,8 @@ public interface AIMapper {
                                                     @Param("jobPostsIdx") long jobPostsIdx);
 
     int insertCompanyMatching(AIRecommendComDTO aiRecommendComDTO);
+
+    JobseekerResumeDetailDTO selectLatestResumeByJobseeker(@Param("jobseekerIdx") int jobseekerIdx);
+
 
 }
