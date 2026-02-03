@@ -31,60 +31,31 @@ public class AiListController {
         return aiListService.selectJobMatch(jobseekerIdx);
     }
 
-
-
-    @GetMapping("/talentDetail")
-    public ResponseEntity<?> talentDetail(@RequestParam("comMatchingIdx") long comMatchingIdx) {
-        System.out.println("[CONTROLLER] talentDetail HIT comMatchingIdx=" + comMatchingIdx);
-        log.info("[CONTROLLER] talentDetail HIT comMatchingIdx={}", comMatchingIdx);
-
+    @GetMapping("/selectComMatch")
+    public ResponseEntity<?> getCompanyMatching(@RequestParam String jobPostsIdx) {
         try {
-            Map<String, Object> data = aiListService.getTalentDetail(comMatchingIdx);
+            // jobPostsIdx를 Long으로 변환
+            long jobPostsIdxLong = Long.parseLong(jobPostsIdx);
 
-            System.out.println("[CONTROLLER] talentDetail RESULT data=" + data);
-            log.info("[CONTROLLER] talentDetail RESULT data={}", data);
-
-            if (data == null || data.isEmpty() || data.get("jobseekerIdx") == null) {
-                return ResponseEntity.status(404).body(Map.of("ok", false, "error", "NOT_FOUND"));
+            // jobPostsIdx가 숫자가 아닌 경우 에러 처리
+            if (jobPostsIdxLong == 0) {
+                return ResponseEntity.badRequest().body("Invalid jobPostsIdx value.");
             }
-            return ResponseEntity.ok(Map.of("ok", true, "data", data));
 
-        } catch (Exception e) {
-            System.out.println("[CONTROLLER] talentDetail ERROR comMatchingIdx=" + comMatchingIdx);
-            e.printStackTrace();
-            log.error("[CONTROLLER] talentDetail ERROR comMatchingIdx={}", comMatchingIdx, e);
+            // jobPostsIdx로 매칭된 결과를 가져오는 서비스 호출
+            List<AIComListDTO> matches = aiListService.selectComMatch(jobPostsIdxLong);
 
-            return ResponseEntity.status(500).body(Map.of("ok", false, "error", "SERVER_ERROR"));
+            if (matches.isEmpty()) {
+                return ResponseEntity.ok("No matching job posts found.");
+            }
+
+            return ResponseEntity.ok(matches);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid jobPostsIdx format.");
         }
     }
 
-    @GetMapping("/talentDetailByJobseeker")
-    public ResponseEntity<?> talentDetailByJobseeker(
-            @RequestParam("jobseekerIdx") int jobseekerIdx,
-            @RequestParam(value = "jobPostsIdx", required = false) Long jobPostsIdx
-    ) {
-        System.out.println("[CONTROLLER] talentDetailByJobseeker HIT jobseekerIdx=" + jobseekerIdx + ", jobPostsIdx=" + jobPostsIdx);
-        log.info("[CONTROLLER] talentDetailByJobseeker HIT jobseekerIdx={}, jobPostsIdx={}", jobseekerIdx, jobPostsIdx);
 
-        try {
-            Map<String, Object> data = aiListService.getTalentDetailByJobseeker(jobseekerIdx, jobPostsIdx);
-
-            System.out.println("[CONTROLLER] talentDetailByJobseeker RESULT data=" + data);
-            log.info("[CONTROLLER] talentDetailByJobseeker RESULT data={}", data);
-
-            if (data == null || data.isEmpty() || data.get("jobseekerIdx") == null) {
-                return ResponseEntity.status(404).body(Map.of("ok", false, "error", "NOT_FOUND"));
-            }
-            return ResponseEntity.ok(Map.of("ok", true, "data", data));
-
-        } catch (Exception e) {
-            System.out.println("[CONTROLLER] talentDetailByJobseeker ERROR jobseekerIdx=" + jobseekerIdx);
-            e.printStackTrace();
-            log.error("[CONTROLLER] talentDetailByJobseeker ERROR jobseekerIdx={}", jobseekerIdx, e);
-
-            return ResponseEntity.status(500).body(Map.of("ok", false, "error", "SERVER_ERROR"));
-        }
-    }
 
 
 
