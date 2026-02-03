@@ -12,24 +12,12 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface AIListMapper {
     List<SelectJobMatchDTO> selectJobMatch(long jobseekerIdx);
 
-
-
-    Map<String, Object> selectTalentDetail(@Param("comMatchingIdx") long comMatchingIdx);
-
-    Integer existsComMatching(@Param("comMatchingIdx") long comMatchingIdx);
-
-    Map<String, Object> selectTalentDetailByJobseeker(
-            @Param("jobseekerIdx") int jobseekerIdx,
-            @Param("jobPostsIdx") Long jobPostsIdx
-    );
-
-
+    List<AIComListDTO> selectComMatch(@Param("jobPostsIdx") long jobPostsIdx);
 
     List<InterviewHistoryDTO> getInterviewHistory(@Param("jobseekerIdx") long jobseekerIdx);
 

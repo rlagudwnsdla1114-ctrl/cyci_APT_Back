@@ -1,57 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.soft.apt.mapper.AI.AIListMapper">
 
-    <select id="existsComMatching" parameterType="long" resultType="int">
-        SELECT COUNT(*)
-        FROM company_matching
-        WHERE COM_MATCHING_IDX = #{comMatchingIdx}
-    </select>
-
-    <select id="selectTalentDetail" parameterType="long" resultType="hashmap">
+    <select id="selectComMatch" resultType="AIComListDTO">
         SELECT
-        cm.COM_MATCHING_IDX   AS comMatchingIdx,
-        js.JOBSEEKER_NAME     AS jobseekerName,
-        cm.COM_MATCH_SCORE    AS comMatchScore,
-        cm.COM_AI_REASON      AS comAiReason,
-        cm.JOB_POSTS_IDX      AS jobPostsIdx,
-        cm.JOBSEEKER_IDX      AS jobseekerIdx,
-        cp.KEYSKILL           AS keySkill,
-        COALESCE(cp.APPLY_MOTIVE, '') AS apply
-        FROM company_matching cm
-        JOIN jobseeker_users js
-        ON js.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-        LEFT JOIN cover_posts cp
-        ON cp.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-        WHERE cm.COM_MATCHING_IDX = #{comMatchingIdx}
-        LIMIT 1
-    </select>
-
-    <!-- ✅ 추가: comMatchingIdx가 없을 때 jobseekerIdx로 가장 최신 매칭 1개를 찾아 상세로 보여줌 -->
-    <select id="selectTalentDetailByJobseeker" resultType="hashmap">
-        SELECT
-        cm.COM_MATCHING_IDX   AS comMatchingIdx,
-        js.JOBSEEKER_NAME     AS jobseekerName,
-        cm.COM_MATCH_SCORE    AS comMatchScore,
-        cm.COM_AI_REASON      AS comAiReason,
-        cm.JOB_POSTS_IDX      AS jobPostsIdx,
-        cm.JOBSEEKER_IDX      AS jobseekerIdx,
-        cp.KEYSKILL           AS keySkill,
-        COALESCE(cp.APPLY_MOTIVE, '') AS apply
-        FROM company_matching cm
-        JOIN jobseeker_users js
-        ON js.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-        LEFT JOIN cover_posts cp
-        ON cp.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-        WHERE cm.JOBSEEKER_IDX = #{jobseekerIdx}
-        <if test="jobPostsIdx != null">
-            AND cm.JOB_POSTS_IDX = #{jobPostsIdx}
-        </if>
-        ORDER BY cm.MATCHING_CREATEAT DESC, cm.COM_MATCHING_IDX DESC
-        LIMIT 1
+        ju.JOBSEEKER_NAME AS jobSeekerName,
+        cp.KEYSKILL AS keySkill,
+        cm.COM_MATCH_SCORE AS comMatchScore,
+        cm.COM_AI_REASON AS comAiReason,
+        DATE_FORMAT(cm.MATCHING_CREATEAT, '%Y-%m-%d') AS matchingCreatedAt,
+        cm.JOB_POSTS_IDX AS jobPostsIdx,
+        cm.JOBSEEKER_IDX AS jobSeekerIdx
+        FROM
+        company_matching cm
+        LEFT JOIN
+        jobseeker_users ju ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
+        LEFT JOIN
+        job_posts jp ON jp.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
+        LEFT JOIN
+        cover_posts cp ON cp.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
+        WHERE
+        cm.JOB_POSTS_IDX = #{jobPostsIdx}
+        ORDER BY
+        cm.COM_MATCH_SCORE DESC
+        LIMIT 20;
     </select>
 
 </mapper>

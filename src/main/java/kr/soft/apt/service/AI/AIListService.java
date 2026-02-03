@@ -9,14 +9,9 @@ import kr.soft.apt.dto.AI.JobSeekerDashboardCountDTO;
 import kr.soft.apt.mapper.AI.AIListMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 @Slf4j
 @Service
 public class AIListService {
@@ -30,52 +25,10 @@ public class AIListService {
     }
 
 
-
-
-    public Map<String, Object> getTalentDetail(long comMatchingIdx) {
-        System.out.println("[SERVICE] getTalentDetail START comMatchingIdx=" + comMatchingIdx);
-        log.info("[SERVICE] getTalentDetail START comMatchingIdx={}", comMatchingIdx);
-
-        int exists = aiListMapper.existsComMatching(comMatchingIdx);
-        System.out.println("[SERVICE] existsComMatching=" + exists);
-        log.info("[SERVICE] existsComMatching={}", exists);
-
-        Map<String, Object> detail = aiListMapper.selectTalentDetail(comMatchingIdx);
-        System.out.println("[SERVICE] selectTalentDetail RESULT detail=" + detail);
-        log.info("[SERVICE] selectTalentDetail RESULT detail={}", detail);
-
-        if (detail == null) {
-            detail = new HashMap<>();
-            detail.put("comMatchingIdx", comMatchingIdx);
-            detail.put("apply", "");
-            return detail;
-        }
-
-        detail.putIfAbsent("apply", "");
-        return detail;
+    public List<AIComListDTO> selectComMatch(long jobPostsIdx) {
+        List<AIComListDTO> resultList = aiListMapper.selectComMatch(jobPostsIdx);
+        return resultList;
     }
-
-    public Map<String, Object> getTalentDetailByJobseeker(int jobseekerIdx, Long jobPostsIdx) {
-        System.out.println("[SERVICE] getTalentDetailByJobseeker START jobseekerIdx=" + jobseekerIdx + ", jobPostsIdx=" + jobPostsIdx);
-        log.info("[SERVICE] getTalentDetailByJobseeker START jobseekerIdx={}, jobPostsIdx={}", jobseekerIdx, jobPostsIdx);
-
-        Map<String, Object> detail = aiListMapper.selectTalentDetailByJobseeker(jobseekerIdx, jobPostsIdx);
-        System.out.println("[SERVICE] selectTalentDetailByJobseeker RESULT detail=" + detail);
-        log.info("[SERVICE] selectTalentDetailByJobseeker RESULT detail={}", detail);
-
-        if (detail == null) {
-            detail = new HashMap<>();
-            detail.put("jobseekerIdx", jobseekerIdx);
-            detail.put("apply", "");
-            return detail;
-        }
-
-        detail.putIfAbsent("apply", "");
-        return detail;
-    }
-
-
-
 
 
 
