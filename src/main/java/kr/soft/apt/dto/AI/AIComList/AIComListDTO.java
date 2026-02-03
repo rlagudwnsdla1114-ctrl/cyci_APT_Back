@@ -4,12 +4,13 @@ import lombok.Data;
 
 @Data
 public class AIComListDTO {
-    private String jobseekerName;
+    private Long jobSeekerIdx;
+    private String name;
     private String keySkill;
-    private int comMatchScore;
+    private Integer matchRate;
+    private String matchDate;
     private String comAiReason;
-    private String matchingCreateat;
-    private long jobPostsIdx;
-    private long jobseekerIdx;
-    private long companyApplicantIdx;
+
 }
+
+

@@ -10,6 +10,7 @@ import kr.soft.apt.dto.AI.JobSeekerDashboardCountDTO;
 import kr.soft.apt.service.AI.AIListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,9 +32,33 @@ public class AiListController {
     }
 
     @GetMapping("/selectComMatch")
-    public List<AIComListDTO> selectComMatch(@RequestParam("jobPostsIdx") long jobPostsIdx) {
-        return aiListService.selectComMatch(jobPostsIdx);
+    public ResponseEntity<?> getCompanyMatching(@RequestParam String jobPostsIdx) {
+        try {
+            // jobPostsIdx를 Long으로 변환
+            long jobPostsIdxLong = Long.parseLong(jobPostsIdx);
+
+            // jobPostsIdx가 숫자가 아닌 경우 에러 처리
+            if (jobPostsIdxLong == 0) {
+                return ResponseEntity.badRequest().body("Invalid jobPostsIdx value.");
+            }
+
+            // jobPostsIdx로 매칭된 결과를 가져오는 서비스 호출
+            List<AIComListDTO> matches = aiListService.selectComMatch(jobPostsIdxLong);
+
+            if (matches.isEmpty()) {
+                return ResponseEntity.ok("No matching job posts found.");
+            }
+
+            return ResponseEntity.ok(matches);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body("Invalid jobPostsIdx format.");
+        }
     }
+
+
+
+
+
 
     @GetMapping("/interviewHistory")
     public List<InterviewHistoryDTO> getInterviewHistory(HttpServletRequest request) {
