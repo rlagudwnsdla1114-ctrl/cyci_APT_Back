@@ -351,4 +351,9 @@ public class AIService {
         );
         return res.getBody();
     }
+    public JobseekerResumeDetailDTO getLatestResume(int jobseekerIdx) {
+        return aiMapper.selectLatestResumeByJobseeker(jobseekerIdx);
+    }
+
+
 }

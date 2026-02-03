@@ -52,18 +52,15 @@
         ON ju.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
         LEFT JOIN cover_posts cp
         ON cp.JOBSEEKER_IDX = ju.JOBSEEKER_IDX
-
-        JOIN jobseeker_applicant ja
+        LEFT JOIN jobseeker_applicant ja
         ON ja.JOB_POSTS_IDX = cm.JOB_POSTS_IDX
         AND ja.JOBSEEKER_IDX = cm.JOBSEEKER_IDX
-
         WHERE jp.COMPANY_IDX = #{companyIdx}
-
         ORDER BY
         cm.COM_MATCH_SCORE DESC,
         cm.MATCHING_CREATEAT DESC,
         cm.COM_MATCHING_IDX DESC
-        LIMIT 3
+        LIMIT 3;
     </select>
 
 
