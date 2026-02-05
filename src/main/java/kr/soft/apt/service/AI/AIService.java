@@ -131,7 +131,9 @@ public class AIService {
     public Map<String, Object> processEvaluation(Long interviewId, Integer questionId,
                                                  Double silenceDuration, Double speakingDuration,
                                                  MultipartFile audioFile) {
-
+        System.out.println("[AUDIO] name=" + audioFile.getOriginalFilename()
+                + ", ct=" + audioFile.getContentType()
+                + ", size=" + audioFile.getSize());
         double silence = (silenceDuration == null) ? 0.0 : silenceDuration;
         double speaking = (speakingDuration == null) ? 0.0 : speakingDuration;
 
@@ -172,6 +174,7 @@ public class AIService {
 
         HttpEntity<org.springframework.util.MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
 
+
         ResponseEntity<Map> res = restTemplate.exchange(
                 aiServer + "/interview/evaluate",
                 HttpMethod.POST,
@@ -182,13 +185,17 @@ public class AIService {
         Map<String, Object> py = res.getBody();
         if (py == null) throw new RuntimeException("파이썬 평가 응답이 비었습니다.");
 
+
+        String transcript = String.valueOf(py.getOrDefault("transcript", ""));
+        System.out.println("🗣️ [면접 답변 STT] " + transcript);
+
         int score = 0;
         Object scoreObj = py.get("score");
         if (scoreObj instanceof Number n) score = n.intValue();
         else score = Integer.parseInt(String.valueOf(scoreObj));
 
         String feedback = String.valueOf(py.get("feedback"));
-        String transcript = String.valueOf(py.getOrDefault("transcript", ""));
+        transcript = String.valueOf(py.getOrDefault("transcript", ""));
 
         // 3. DB 저장
         InterviewResultDTO interviewResult = new InterviewResultDTO();
@@ -200,6 +207,7 @@ public class AIService {
 
         Map<String, Object> response = new HashMap<>();
         response.put("totalScore", score);
+        response.put("transcript", transcript);
         response.put("feedback", feedback);
         return response;
     }
